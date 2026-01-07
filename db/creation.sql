@@ -5,6 +5,7 @@ CREATE TABLE delivraptor_colis (
     localisation VARCHAR(255),
     etape INT NOT NULL CHECK (etape BETWEEN 1 AND 9),
     date_etape DATETIME NOT NULL,
+    contact BOOLEAN DEFAULT FALSE,
 
     -- Étape 9
     livraison_type ENUM('MAINS_PROPRES', 'ABSENT', 'REFUSE'),
