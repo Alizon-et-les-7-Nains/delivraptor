@@ -79,6 +79,7 @@ int main(void)
             close(sock);
             exit(EXIT_FAILURE);
         }
+    buffer[ret] = '\0';
     printf("Numero de commande reçu : %s", buffer);
 
     const char *message = "Message bien reçu par le serveur !\n";
