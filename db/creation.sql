@@ -1,9 +1,3 @@
-CREATE TABLE delivraptor_auth (
-    username VARCHAR(50) PRIMARY KEY,
-    u_password CHAR(32) NOT NULL
-);
-
-
 CREATE TABLE delivraptor_colis (
     numBordereau INT AUTO_INCREMENT PRIMARY KEY,
     noCommande INT NOT NULL UNIQUE,
