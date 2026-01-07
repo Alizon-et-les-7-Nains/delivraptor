@@ -16,7 +16,7 @@ int main(void)
 {
     srand(time(NULL));
     int sock;
-    int cnx;
+    int socketClient;
     int ret;
     int size;
     char buffer[BUF_SIZE];
@@ -60,8 +60,8 @@ int main(void)
     printf("listen() : en attente d'une connexion...\n");
 
     size = sizeof(conn_addr);
-    cnx = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
-    if (cnx == -1) {
+    socketClient = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
+    if (socketClient == -1) {
         perror("accept");
         close(sock);
         exit(EXIT_FAILURE);
@@ -69,22 +69,23 @@ int main(void)
 
 
     printf("En attente du message du client...\n");
-    write(cnx, "Entrez votre numero de commande : \n", strlen("Entrez votre numero de commande : \n"));
+    write(socketClient, "Entrez votre numero de commande : \n", strlen("Entrez votre numero de commande : \n"));
 
     printf("Réponse envoyée au client\n");
-        ret = read(cnx, buffer, BUF_SIZE - 1);
+        ret = read(socketClient, buffer, BUF_SIZE - 1);
         if (ret == -1) {
             perror("read");
-            close(cnx);
+            close(socketClient);
             close(sock);
             exit(EXIT_FAILURE);
         }
+    buffer[ret] = '\0';
     printf("Numero de commande reçu : %s", buffer);
 
     const char *message = "Message bien reçu par le serveur !\n";
-    write(cnx, message, strlen(message));
+    write(socketClient, message, strlen(message));
 
-    write(cnx, "En attente du numero de bordereau : \n", strlen("En attente du numero de bordereau : \n"));
+    write(socketClient, "En attente du numero de bordereau : \n", strlen("En attente du numero de bordereau : \n"));
     
     char numBandereau[12];
     for (int i = 0; i < 10; i++) {
@@ -94,9 +95,9 @@ int main(void)
     numBandereau[10] = '\n';
     numBandereau[11] = '\0';
 
-    write(cnx, numBandereau , strlen(numBandereau));
+    write(socketClient, numBandereau , strlen(numBandereau));
 
-    close(cnx);
+    close(socketClient);
     close(sock);
 
     printf("Connexion fermée, serveur arrêté.\n");
