@@ -4,7 +4,7 @@ CREATE TABLE delivraptor_auth (
 );
 
 
-CREATE TABLE delivraptor_colis (
+CREATE TABLE _delivraptor_colis (
     numBordereau INT AUTO_INCREMENT PRIMARY KEY,
     noCommande INT NOT NULL UNIQUE,
     destination VARCHAR(255) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE delivraptor_colis (
 );
 
 
-CREATE TABLE delivraptor_colis_historique (
+CREATE TABLE _delivraptor_colis_historique (
     id INT AUTO_INCREMENT PRIMARY KEY,
     numBordereau INT NOT NULL,
     etape INT NOT NULL CHECK (etape BETWEEN 1 AND 9),
@@ -29,7 +29,7 @@ CREATE TABLE delivraptor_colis_historique (
 );
 
 
-CREATE TABLE delivraptor_file_prise_en_charge (
+CREATE TABLE _delivraptor_file_prise_en_charge (
     numBordereau INT PRIMARY KEY,
     date_entree DATETIME NOT NULL,
     FOREIGN KEY (numBordereau) REFERENCES colis(numBordereau)
