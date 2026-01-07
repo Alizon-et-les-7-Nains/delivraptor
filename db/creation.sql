@@ -1,5 +1,5 @@
 CREATE TABLE delivraptor_colis (
-    numBordereau INT AUTO_INCREMENT PRIMARY KEY,
+    numBordereau INT PRIMARY KEY,
     noCommande INT NOT NULL UNIQUE,
     destination VARCHAR(255) NOT NULL,
     localisation VARCHAR(255),
