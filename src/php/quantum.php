@@ -1,7 +1,7 @@
 <?php 
     $processus = [
-        ['name' => 'P1', 'work' => 4],
-        ['name' => 'P2', 'work' => 6],
+        ['name' => 'P1', 'work' => 4,
+        ['name' => 'P2', 'work' => 6]],
         ['name' => 'P3', 'work' => 3],
     ];
 
