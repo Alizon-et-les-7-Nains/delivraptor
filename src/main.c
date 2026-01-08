@@ -75,7 +75,7 @@ int main() {
        for (int i = 0; i < num_fields; i++) {
             printf("%s\t", row[i]);
             printf("\n");
-       }
+        }
     }
 
     // Verification si aucun bordereau n'a été trouvé

@@ -1,4 +1,8 @@
 <?php
+
+require_once 'pdo.php';
+session_start();
+
 //Cette fonction lit exactement $len octets depuis un socket, même si
 //les données arrivent en plusieurs morceaux.function 
 function recv_all($sock, int $len){
@@ -32,13 +36,20 @@ function sendPrograptor(string $host, int $port, int $type, array $payload): arr
         pack("N", strlen($json)) .
         $json;
 
-    $sock = fsockopen($host, $port, $errno, $errstr, 5);
+        $sock = fsockopen($host, $port, $errno, $errstr, 5);
     if (!$sock) {
         throw new Exception("Connexion échouée");
     }
 
-    fwrite($sock, $packet);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $idCommande = $_POST['idCommande'];
+        $stmt = $pdo->prepare('SELECT idCommande, CONCAT(adresse, ", " ,codePostal, " ", ville) as destination FROM _commande INNER JOIN _adresseLivraison ON idAdresseLivr = idAdresseLivraison WHERE idCommande = :idCommande');
+        $stmt->execute([
+            ':idCommande' => $idCommande
+        ]);
+    }    
 
+    fwrite($sock, $packet);
 
     $header = recv_all($sock, 8);
 
