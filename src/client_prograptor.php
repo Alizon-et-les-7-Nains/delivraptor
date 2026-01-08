@@ -21,7 +21,7 @@ function sendTimLeBg(string $host, int $port, int $type, array $payload): array
 
     fwrite($sock, $packet);
 
- 
+
     $header = fread($sock, 8);
     if (strlen($header) < 8) {
         throw new Exception("Réponse incomplète");
