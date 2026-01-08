@@ -22,7 +22,19 @@ void config_BD() {
     }
 }
 
+int num_bordereau_unique() {
+    char numBandereau[11];
+    for (int i = 0; i < 10; i++) {
+        int n = rand() % 10;
+        sprintf(&numBandereau[i], "%d", n);
+    }
+    numBandereau[10] = '\0';
+
+    return atoi(numBandereau);
+}
+
 int main() {
+    srand(time(NULL));
     // Configuration de la base de données
     config_BD();
 
@@ -31,7 +43,7 @@ int main() {
     // ################################################
 
     // Exemple avec un numéro de commande spécifique (envoyé par le client)
-    int noCommande = 123; 
+    int noCommande = 1234056; 
 
     // Tableau pour stocker la requête SQL 255 caractères + 1 pour le caractère null
     char query[256];
@@ -40,21 +52,37 @@ int main() {
     // snprintf ecrit la requête SQL dans le buffer query elle sert à ne pas depasser la taille du buffer
     snprintf(query, sizeof(query), "SELECT numBordereau FROM _delivraptor_colis WHERE noCommande = %d", noCommande);
 
-    // Récupération et affichage du résultat
-    query = mysql_store_result(conn);
-    if (!result) {
-        fprintf(stderr, "Erreur mysql_store_result: %s\n", mysql_error(conn));
+
+    if (mysql_query(conn, query)) {
+        fprintf(stderr, "Erreur mysql_query: %s\n", mysql_error(conn));
         mysql_close(conn);
         exit(EXIT_FAILURE);
     }
 
-    // int num_fields = mysql_num_fields(result);
-    // MYSQL_ROW row;
-    // while ((row = mysql_fetch_row(result))) {
-    //     for (int i = 0; i < num_fields; i++)
-    //         printf("%s\t", row[i]);
-    //     printf("\n");
-    // }
+    MYSQL_RES *result = mysql_store_result(conn);
+    if (!result) {
+        fprintf(stderr, "Erreur mysql_store_result: %s\n", mysql_error(conn));
+        mysql_close(conn);
+        exit(EXIT_FAILURE);
+    }    
+
+    int num_fields = mysql_num_fields(result);
+    MYSQL_ROW row;
+    while ((row = mysql_fetch_row(result))) {
+       for (int i = 0; i < num_fields; i++) {
+            printf("%s\t", row[i]);
+            printf("\n");
+       }
+    }
+
+    // Verification si aucun bordereau n'a été trouvé
+    if (mysql_num_rows(result) == 0) {
+        printf("Aucun bordereau trouvé pour le numéro de commande %d\n", noCommande);
+        // Generation numero de bordereau aleatoire et unique
+        printf("Numéro de bordereau généré : %d\n", num_bordereau_unique());
+    } else {
+        printf("Bordereau trouvé pour le numéro de commande %d\n", noCommande);
+    }
 
     mysql_close(conn);
 
