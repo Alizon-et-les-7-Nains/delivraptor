@@ -12,7 +12,6 @@ CREATE TABLE _delivraptor_colis (
     etape INT NOT NULL CHECK (etape BETWEEN 1 AND 9),
     date_etape DATETIME NOT NULL,
     contact BOOLEAN DEFAULT FALSE,
-
     -- Étape 9
     livraison_type ENUM('MAINS_PROPRES', 'ABSENT', 'REFUSE'),
     refus_raison VARCHAR(255),
@@ -26,12 +25,12 @@ CREATE TABLE _delivraptor_colis_historique (
     etape INT NOT NULL CHECK (etape BETWEEN 1 AND 9),
     date_etape DATETIME NOT NULL,
     localisation VARCHAR(255),
-    FOREIGN KEY (numBordereau) REFERENCES colis(numBordereau)
+    FOREIGN KEY (numBordereau) REFERENCES _delivraptor_colis(numBordereau)
 );
 
 
 CREATE TABLE _delivraptor_file_prise_en_charge (
     numBordereau INT PRIMARY KEY,
     date_entree DATETIME NOT NULL,
-    FOREIGN KEY (numBordereau) REFERENCES colis(numBordereau)
+    FOREIGN KEY (numBordereau) REFERENCES _delivraptor_colis(numBordereau)
 );
