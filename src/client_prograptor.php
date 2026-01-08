@@ -18,7 +18,7 @@ function recv_all($sock, int $len){
     return $data;
 }
 
-function sendTimLeBg(string $host, int $port, int $type, array $payload): array
+function sendPrograptor(string $host, int $port, int $type, array $payload): array
 {
     $version = 1;
     $json = json_encode($payload, JSON_UNESCAPED_UNICODE);
@@ -55,7 +55,7 @@ function sendTimLeBg(string $host, int $port, int $type, array $payload): array
 }
 
 // TEST
-$response = sendTimLeBg(
+$response = sendPrograptor(
     "127.0.0.1",
     9000,
     0x0001,
