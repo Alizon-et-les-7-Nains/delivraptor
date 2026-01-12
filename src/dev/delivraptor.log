@@ -1,0 +1,100 @@
+[2026-01-12 10:48:00] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 30, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 10:48:39] [127.0.0.1:62584] CONNECT: Nouvelle connexion client
+[2026-01-12 10:48:39] [127.0.0.1:62584] FORK: Fork terminé
+[2026-01-12 10:48:39] [127.0.0.1:62584] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:48:39] [127.0.0.1:62584] [admin] AUTH: Authentification réussie
+[2026-01-12 10:48:39] [127.0.0.1:62584] [admin] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:48:39] [127.0.0.1:62584] [admin] EXIT: Processus fils terminé
+[2026-01-12 10:48:39] [127.0.0.1:62586] CONNECT: Nouvelle connexion client
+[2026-01-12 10:48:39] [127.0.0.1:62586] FORK: Fork terminé
+[2026-01-12 10:48:39] [127.0.0.1:62586] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:48:39] [127.0.0.1:62586] CREATE: Tentative sans authentification
+[2026-01-12 10:48:39] [127.0.0.1:62586] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:48:39] [127.0.0.1:62586] EXIT: Processus fils terminé
+[2026-01-12 10:48:39] [127.0.0.1:62588] CONNECT: Nouvelle connexion client
+[2026-01-12 10:48:39] [127.0.0.1:62588] FORK: Fork terminé
+[2026-01-12 10:48:39] [127.0.0.1:62588] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:48:39] [127.0.0.1:62588] HELP: Commande HELP exécutée
+[2026-01-12 10:48:39] [127.0.0.1:62588] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:48:39] [127.0.0.1:62588] EXIT: Processus fils terminé
+[2026-01-12 10:49:37] [127.0.0.1:62592] CONNECT: Nouvelle connexion client
+[2026-01-12 10:49:37] [127.0.0.1:62592] FORK: Fork terminé
+[2026-01-12 10:49:37] [127.0.0.1:62592] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:49:37] [127.0.0.1:62592] [admin] AUTH: Authentification réussie
+[2026-01-12 10:49:37] [127.0.0.1:62592] [admin] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:49:37] [127.0.0.1:62592] [admin] EXIT: Processus fils terminé
+[2026-01-12 10:49:37] [127.0.0.1:62594] CONNECT: Nouvelle connexion client
+[2026-01-12 10:49:37] [127.0.0.1:62594] FORK: Fork terminé
+[2026-01-12 10:49:37] [127.0.0.1:62594] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:49:37] [127.0.0.1:62594] CREATE: Tentative sans authentification
+[2026-01-12 10:49:37] [127.0.0.1:62594] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:49:37] [127.0.0.1:62594] EXIT: Processus fils terminé
+[2026-01-12 10:49:37] [127.0.0.1:62596] CONNECT: Nouvelle connexion client
+[2026-01-12 10:49:37] [127.0.0.1:62596] FORK: Fork terminé
+[2026-01-12 10:49:37] [127.0.0.1:62596] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:49:37] [127.0.0.1:62596] HELP: Commande HELP exécutée
+[2026-01-12 10:49:37] [127.0.0.1:62596] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:49:37] [127.0.0.1:62596] EXIT: Processus fils terminé
+[2026-01-12 10:50:14] [127.0.0.1:62606] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:14] [127.0.0.1:62606] FORK: Fork terminé
+[2026-01-12 10:50:14] [127.0.0.1:62606] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:14] [127.0.0.1:62606] [admin] AUTH: Authentification réussie
+[2026-01-12 10:50:14] [127.0.0.1:62606] [admin] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:14] [127.0.0.1:62606] [admin] EXIT: Processus fils terminé
+[2026-01-12 10:50:14] [127.0.0.1:62608] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:14] [127.0.0.1:62608] FORK: Fork terminé
+[2026-01-12 10:50:14] [127.0.0.1:62608] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:14] [127.0.0.1:62608] CREATE: Tentative sans authentification
+[2026-01-12 10:50:14] [127.0.0.1:62608] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:14] [127.0.0.1:62610] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:14] [127.0.0.1:62608] EXIT: Processus fils terminé
+[2026-01-12 10:50:14] [127.0.0.1:62610] FORK: Fork terminé
+[2026-01-12 10:50:14] [127.0.0.1:62610] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:14] [127.0.0.1:62610] HELP: Commande HELP exécutée
+[2026-01-12 10:50:14] [127.0.0.1:62610] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:14] [127.0.0.1:62610] EXIT: Processus fils terminé
+[2026-01-12 10:50:31] [127.0.0.1:62614] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:31] [127.0.0.1:62614] FORK: Fork terminé
+[2026-01-12 10:50:31] [127.0.0.1:62614] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:31] [127.0.0.1:62614] [admin] AUTH: Authentification réussie
+[2026-01-12 10:50:31] [127.0.0.1:62614] [admin] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:31] [127.0.0.1:62616] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:31] [127.0.0.1:62614] [admin] EXIT: Processus fils terminé
+[2026-01-12 10:50:31] [127.0.0.1:62616] FORK: Fork terminé
+[2026-01-12 10:50:31] [127.0.0.1:62616] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:31] [127.0.0.1:62616] CREATE: Tentative sans authentification
+[2026-01-12 10:50:31] [127.0.0.1:62616] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:31] [127.0.0.1:62618] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:31] [127.0.0.1:62616] EXIT: Processus fils terminé
+[2026-01-12 10:50:31] [127.0.0.1:62618] FORK: Fork terminé
+[2026-01-12 10:50:31] [127.0.0.1:62618] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:31] [127.0.0.1:62618] HELP: Commande HELP exécutée
+[2026-01-12 10:50:31] [127.0.0.1:62618] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:31] [127.0.0.1:62618] EXIT: Processus fils terminé
+[2026-01-12 10:50:36] [127.0.0.1:62624] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:36] [127.0.0.1:62624] FORK: Fork terminé
+[2026-01-12 10:50:36] [127.0.0.1:62624] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:36] [127.0.0.1:62624] [admin] AUTH: Authentification réussie
+[2026-01-12 10:50:36] [127.0.0.1:62624] [admin] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:36] [127.0.0.1:62624] [admin] EXIT: Processus fils terminé
+[2026-01-12 10:50:36] [127.0.0.1:62626] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:36] [127.0.0.1:62626] FORK: Fork terminé
+[2026-01-12 10:50:36] [127.0.0.1:62626] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:36] [127.0.0.1:62626] CREATE: Tentative sans authentification
+[2026-01-12 10:50:36] [127.0.0.1:62626] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:36] [127.0.0.1:62626] EXIT: Processus fils terminé
+[2026-01-12 10:50:36] [127.0.0.1:62628] CONNECT: Nouvelle connexion client
+[2026-01-12 10:50:36] [127.0.0.1:62628] FORK: Fork terminé
+[2026-01-12 10:50:36] [127.0.0.1:62628] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:50:36] [127.0.0.1:62628] HELP: Commande HELP exécutée
+[2026-01-12 10:50:36] [127.0.0.1:62628] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:50:36] [127.0.0.1:62628] EXIT: Processus fils terminé
+[2026-01-12 10:51:21] [127.0.0.1:62637] CONNECT: Nouvelle connexion client
+[2026-01-12 10:51:21] [127.0.0.1:62637] FORK: Fork terminé
+[2026-01-12 10:51:21] [127.0.0.1:62637] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 10:51:21] [127.0.0.1:62637] [admin] AUTH: Authentification réussie
+[2026-01-12 10:51:21] [127.0.0.1:62637] [admin] CREATE: Bordereau existant: 123456789
+[2026-01-12 10:51:21] [127.0.0.1:62637] [admin] STATUS: 123456789
+[2026-01-12 10:51:21] [127.0.0.1:62637] [admin] HELP: Commande HELP exécutée
+[2026-01-12 10:51:21] [127.0.0.1:62637] [admin] DISCONNECT: Client déconnecté proprement
+[2026-01-12 10:51:21] [127.0.0.1:62637] [admin] EXIT: Processus fils terminé

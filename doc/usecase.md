@@ -175,7 +175,7 @@ pkill delivraptor_server
 mysql -u pperche -pgrognasseEtCompagnie delivraptor -e "SELECT COUNT(*) FROM _delivraptor_file_prise_en_charge;"
 
 # Libérer manuellement un colis (si besoin)
-mysql -u pperche -pgrognasseEtCompagnie delivraptor -e "DELETE FROM _delivraptor_file_prise_en_charge WHERE numBordereau = 1234567890;"
+mysql -u pperche -pgrognasseEtCompagnie delivraptor -e "DELETE FROM _delivraptor_file_prise_en_charge"
 ```
 
 ### 5.4 Problèmes MySQL
