@@ -1,0 +1,10 @@
+[2026-01-12 13:41:04] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 13:41:18] [127.0.0.1:49998] CONNECT: Nouvelle connexion client
+[2026-01-12 13:41:18] [127.0.0.1:49998] FORK: Fork terminé
+[2026-01-12 13:41:18] [127.0.0.1:49998] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 13:41:32] [127.0.0.1:49998] [admin] AUTH: Authentification réussie
+[2026-01-12 13:41:44] [127.0.0.1:49998] [admin] CREATE: Nouveau bordereau créé
+[2026-01-12 13:41:51] [127.0.0.1:49998] [admin] STATUS: 2429363957
+[2026-01-12 13:42:22] [127.0.0.1:49998] [admin] STATUS: 2429363957
+[2026-01-12 13:42:27] [127.0.0.1:49998] [admin] STATUS: 2429363957
+[2026-01-12 13:42:33] [127.0.0.1:49998] [admin] HELP: Commande HELP exécutée

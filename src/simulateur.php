@@ -152,6 +152,6 @@ foreach ($colis as $col) {
     echo "Bordereau $numBordereau : Étape {$col['etape']} → $nouvelle_etape ($localisation)\n";
 }
 
-echo "\n=== Simulation terminée ===\n";
+echo "\n### Simulation terminée ###\n";
 echo "$compteur colis avancés d'une étape.\n";
 ?>

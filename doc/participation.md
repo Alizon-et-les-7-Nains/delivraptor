@@ -8,7 +8,6 @@
 | Tâche | DOOM TIMÉO | PERCHE PAOLO | Total |
 |-------|-----------|--------------|-------|
 | **Conception & Design** | | | **100%** |
-| - Analyse des besoins | 0% | 0% | 0% |
 | - Design du protocole | 0% | 0% | 0% |
 | - Architecture système | 0% | 0% | 0% |
 | **Développement Serveur (C)** | | | **100%** |

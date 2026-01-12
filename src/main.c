@@ -17,7 +17,7 @@
 #include <signal.h>           // Gestion des signaux (SIGCHLD pour détecter fin des processus fils)
 #include <errno.h>            // Gestion des codes d'erreur (errno)
 
-// Variable extern pour errno (standard C)
+
 extern int errno;
 MYSQL *conn = NULL;
 char *global_log_file = NULL;
