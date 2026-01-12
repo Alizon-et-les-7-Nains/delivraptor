@@ -27,6 +27,7 @@ struct ServerConfig *global_config = NULL;
 #define BUFFER_SIZE 1024
 #define MAX_LINE_LENGTH 256
 #define MAX_LOG_MESSAGE 512
+#define PORT_SERVER_DEFAULT 8080
 
 // Structure pour stocker l'état d'une session client
 // Chaque client connecté au serveur a sa propre session associée
@@ -954,7 +955,7 @@ int main(int argc, char *argv[]) {
     // ###############################################
     
     struct ServerConfig config = {
-        .port = 8080,
+        .port =  PORT_SERVER_DEFAULT,
         .capacity = 5,
         .auth_file = "./auth.txt",
         .log_file = "./delivraptor.log"
