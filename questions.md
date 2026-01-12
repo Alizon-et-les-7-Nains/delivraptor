@@ -1,4 +1,4 @@
 # Questions
 
-- Plusieurs transporteurs ? NON
-- Cote simulateur pour le script auto de passage d'étapes il interagie avec la BD ou il demande au service (en C) pour mettre a jour la BD à chaque etapes Il peut interagir avec la BD pour passer les etapes
+- Auth comment le clmient s'authentifie avec le auth.txt car il faut ajouter le client non ?
+- Pour le code du simulateur ou il va dans src ?
