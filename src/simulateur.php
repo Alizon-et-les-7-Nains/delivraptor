@@ -77,7 +77,7 @@ foreach ($colis as $col) {
                 break;
             case 2:
                 $type_livraison = 'ABSENT';
-                $photo_path = ''; // Mettre image boite aux lettres
+                $photo_path = './photo.jpg'; // Mettre image boite aux lettres
                 break;
             case 3:
                 $type_livraison = 'REFUSE';

@@ -16,7 +16,7 @@
 | - Base de données MySQL | 0% | 0% | 0% |
 | - Système de logging | 0% | 0% | 0% |
 | **Développement Client (PHP)** | | | **100%** |
-| - Client telnet-like | 0% | 0% | 0% |
+| - Client style telnet | 0% | 0% | 0% |
 | - Intégration Alizon | 0% | 0% | 0% |
 | - Script simulateur | 0% | 0% | 0% |
 | - Interface ligne de commande | 0% | 0% | 0% |
@@ -24,12 +24,10 @@
 | - Schéma & création tables | 0% | 0% | 0% |
 | - Requêtes SQL | 0% | 0% | 0% |
 | - Gestion capacité | 0% | 0% | 0% |
-| - Données de test | 0% | 0% | 0% |
 | **Documentation** | | | **100%** |
 | - Documentation technique | 0% | 0% | 0% |
 | - Cas d'utilisation | 0% | 0% | 0% |
 | - Guide d'installation | 0% | 0% | 0% |
-| - README & rapport | 0% | 0% | 0% |
 | **Tests & Validation** | | | **100%** |
 | - Tests unitaires | 0% | 0% | 0% |
 | - Tests d'intégration | 0% | 0% | 0% |

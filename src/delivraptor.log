@@ -8,3 +8,86 @@
 [2026-01-12 13:42:22] [127.0.0.1:49998] [admin] STATUS: 2429363957
 [2026-01-12 13:42:27] [127.0.0.1:49998] [admin] STATUS: 2429363957
 [2026-01-12 13:42:33] [127.0.0.1:49998] [admin] HELP: Commande HELP exécutée
+[2026-01-12 14:03:59] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 14:04:32] [127.0.0.1:50167] CONNECT: Nouvelle connexion client
+[2026-01-12 14:04:32] [127.0.0.1:50167] FORK: Fork terminé
+[2026-01-12 14:04:32] [127.0.0.1:50167] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 14:04:36] [127.0.0.1:50167] [admin] AUTH: Authentification réussie
+[2026-01-12 14:04:53] [127.0.0.1:50167] [admin] CREATE: Bordereau existant: 7305994794
+[2026-01-12 14:05:06] [127.0.0.1:50167] [admin] STATUS: 7305994794
+[2026-01-12 14:05:22] [127.0.0.1:50167] [admin] ERROR: 7305994794[D[D[D
+[2026-01-12 14:05:26] [127.0.0.1:50167] [admin] STATUS: 7305994794
+[2026-01-12 14:05:27] [127.0.0.1:50167] [admin] STATUS: 7305994794
+[2026-01-12 14:28:18] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 14:28:29] [127.0.0.1:50511] CONNECT: Nouvelle connexion client
+[2026-01-12 14:28:29] [127.0.0.1:50511] FORK: Fork terminé
+[2026-01-12 14:28:29] [127.0.0.1:50511] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 14:28:29] [127.0.0.1:50511] [alizon] AUTH: Authentification réussie
+[2026-01-12 14:28:29] [127.0.0.1:50511] [alizon] CREATE: Nouveau bordereau créé
+[2026-01-12 14:28:29] [127.0.0.1:50511] [alizon] STATUS: 3847562019
+[2026-01-12 14:28:29] [127.0.0.1:50511] [alizon] DISCONNECT: Client déconnecté proprement
+[2026-01-12 14:28:29] [127.0.0.1:50511] [alizon] EXIT: Processus fils terminé
+[2026-01-12 14:31:03] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 14:31:06] [127.0.0.1:50547] CONNECT: Nouvelle connexion client
+[2026-01-12 14:31:06] [127.0.0.1:50547] FORK: Fork terminé
+[2026-01-12 14:31:06] [127.0.0.1:50547] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 14:31:06] [127.0.0.1:50547] [alizon] AUTH: Authentification réussie
+[2026-01-12 14:31:06] [127.0.0.1:50547] [alizon] CREATE: Bordereau existant: 971078320
+[2026-01-12 14:31:06] [127.0.0.1:50547] [alizon] STATUS: Bordereau manquant
+[2026-01-12 14:31:06] [127.0.0.1:50547] [alizon] DISCONNECT: Client déconnecté proprement
+[2026-01-12 14:31:06] [127.0.0.1:50547] [alizon] EXIT: Processus fils terminé
+[2026-01-12 14:32:02] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 14:32:06] [127.0.0.1:50562] CONNECT: Nouvelle connexion client
+[2026-01-12 14:32:06] [127.0.0.1:50562] FORK: Fork terminé
+[2026-01-12 14:32:06] [127.0.0.1:50562] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 14:32:06] [127.0.0.1:50562] [alizon] AUTH: Authentification réussie
+[2026-01-12 14:32:06] [127.0.0.1:50562] [alizon] CREATE: Bordereau existant: 971078320
+[2026-01-12 14:32:06] [127.0.0.1:50562] [alizon] STATUS: 971078320
+[2026-01-12 14:32:06] [127.0.0.1:50562] [alizon] DISCONNECT: Client déconnecté proprement
+[2026-01-12 14:32:06] [127.0.0.1:50562] [alizon] EXIT: Processus fils terminé
+[2026-01-12 14:39:03] [0.0.0.0:6000] [SERVER] START: Serveur démarré - Port: 6000, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 14:39:14] [127.0.0.1:50758] CONNECT: Nouvelle connexion client
+[2026-01-12 14:39:14] [127.0.0.1:50758] FORK: Fork terminé
+[2026-01-12 14:39:14] [127.0.0.1:50758] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 14:39:14] [127.0.0.1:50758] [alizon] AUTH: Authentification réussie
+[2026-01-12 14:39:14] [127.0.0.1:50758] [alizon] CREATE: Bordereau existant: 971078320
+[2026-01-12 14:39:14] [127.0.0.1:50758] [alizon] STATUS: 971078320
+[2026-01-12 14:39:14] [127.0.0.1:50758] [alizon] DISCONNECT: Client déconnecté proprement
+[2026-01-12 14:39:14] [127.0.0.1:50758] [alizon] EXIT: Processus fils terminé
+[2026-01-12 16:05:01] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 16:05:34] [127.0.0.1:51479] CONNECT: Nouvelle connexion client
+[2026-01-12 16:05:34] [127.0.0.1:51479] FORK: Fork terminé
+[2026-01-12 16:05:34] [127.0.0.1:51479] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 16:05:45] [127.0.0.1:51479] [admin] AUTH: Authentification réussie
+[2026-01-12 16:05:54] [127.0.0.1:51479] [admin] CREATE: Erreur DB_QUERY lors de la vérification d'existence
+[2026-01-12 16:07:53] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 16:07:56] [127.0.0.1:51523] CONNECT: Nouvelle connexion client
+[2026-01-12 16:07:56] [127.0.0.1:51523] FORK: Fork terminé
+[2026-01-12 16:07:56] [127.0.0.1:51523] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 16:08:07] [127.0.0.1:51523] AUTH: Format MD5 invalide
+[2026-01-12 16:08:10] [127.0.0.1:51523] ERROR: ERROR
+[2026-01-12 16:08:18] [127.0.0.1:51523] [admin] AUTH: Authentification réussie
+[2026-01-12 16:08:32] [127.0.0.1:51523] [admin] CREATE: Erreur DB_QUERY lors de la vérification d'existence
+[2026-01-12 16:12:25] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 16:12:28] [127.0.0.1:51581] CONNECT: Nouvelle connexion client
+[2026-01-12 16:12:28] [127.0.0.1:51581] FORK: Fork terminé
+[2026-01-12 16:12:28] [127.0.0.1:51581] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 16:12:33] [127.0.0.1:51581] AUTH: Format MD5 invalide
+[2026-01-12 16:12:37] [127.0.0.1:51581] ERROR: [A[A[B[B
+[2026-01-12 16:12:48] [127.0.0.1:51581] [admin] AUTH: Authentification réussie
+[2026-01-12 16:12:57] [127.0.0.1:51581] [admin] CREATE: Erreur DB_QUERY lors de la vérification d'existence
+[2026-01-12 16:13:12] [127.0.0.1:51581] [admin] CREATE: Erreur DB_QUERY lors de la vérification d'existence
+[2026-01-12 16:14:21] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 16:14:22] [127.0.0.1:51616] CONNECT: Nouvelle connexion client
+[2026-01-12 16:14:22] [127.0.0.1:51616] FORK: Fork terminé
+[2026-01-12 16:14:22] [127.0.0.1:51616] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 16:14:30] [127.0.0.1:51616] [admin] AUTH: Authentification réussie
+[2026-01-12 16:14:38] [127.0.0.1:51616] [admin] CREATE: Erreur DB_QUERY lors de la vérification d'existence
+[2026-01-12 16:14:47] [127.0.0.1:51616] [admin] CREATE: Erreur DB_QUERY lors de la vérification d'existence
+[2026-01-12 16:14:59] [127.0.0.1:51616] [admin] CREATE: Erreur DB_QUERY lors de la vérification d'existence
+[2026-01-12 16:21:46] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-12 16:21:51] [127.0.0.1:51741] CONNECT: Nouvelle connexion client
+[2026-01-12 16:21:51] [127.0.0.1:51741] FORK: Fork terminé
+[2026-01-12 16:21:51] [127.0.0.1:51741] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-12 16:22:02] [127.0.0.1:51741] [admin] AUTH: Authentification réussie
+[2026-01-12 16:22:07] [127.0.0.1:51741] [admin] CREATE: Nouveau bordereau créé
