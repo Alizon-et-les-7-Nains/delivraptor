@@ -37,7 +37,7 @@ AUTH_SUCCESS
 
 # Étape 2: Création d'un bordereau
 CREATE 123456789
-BORDEREAU 3847562019
+BORDEREAU 3847562019 # Numero de bordereau donné à titre d'example 
 
 # Étape 3: Vérification
 STATUS 3847562019
