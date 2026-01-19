@@ -1,410 +1,154 @@
 # **PROTOCOLE DÉLIVRAPTOR - Documentation Technique**
 
-## 1. **Introduction**
+## Vue d'ensemble
 
-**Version** : 1.0  
-**Date** : 12/01/26  
-**Auteur** : Alizon et les sept nains
+Le protocole Délivraptor est un protocolee basé sur TCP permettant à un client de se connecter au serveur de simulation de livraison. Toutes les commandes sont envoyées ene brut suivies d'un saut de ligne (`\n`).
 
-### 1.1 Objectif
+## Connexion
 
-Protocole client-serveur pour la gestion de livraisons entre Alizon et Délivraptor.
+- **Port par défaut** : 8080
+- **Protocole** : TCP
+- **Encodage** : UTF-8
 
-## 2. **Architecture Client-Serveur**
+## Authentification requise
 
-![architecture](./archi.png)
+Toutes les commandes (sauf `AUTH` et `HELP`) nécessitent une authentification préalable.
 
-### 2.1 Schéma de communication
+## Grammaire des commandes
 
-```
-Client (Alizon)        Serveur (Délivraptor)
-     |                                               |
-     |---- COMMANDE ---------->|
-     |                                               |
-     |<--- RÉPONSE ----------------|
-     |                                               |
-```
+### AUTH - Authentification
 
-## 3. **Format des messages**
+AUTH <username> <password_md5>
 
-### 3.1 Structure générale
+**Paramètres** :
 
-- **Une commande = une ligne**
-- **Terminaison** : `\n`
-- **Sensible à la casse** : TOUTES LES COMMANDES EN MAJUSCULES
-- **Encodage** : ASCII pur (pas d'accents)
+- `username` : Identifiant utilisateur
+- `password_md5` : Mot de passe hashé en MD5 (32 caractères hexadécimaux)
 
-### 3.2 Format de base
+**Réponses possibles** :
 
-```
-COMMANDE [paramètre1] [paramètre2] ... [paramètreN]\n
-```
+- `AUTH_SUCCESS` : Authentification réussie
+- `ERROR AUTH_FAILED` : Identifiants incorrects
+- `ERROR INVALID_MD5_FORMAT` : Format MD5 invalide
+- `ERROR MISSING_CREDENTIALS` : Paramètres manquants
+- `ERROR ALREADY_AUTHENTICATED` : Déjà authentifié
 
-## 4. **Commandes disponibles**
-
-### 4.1 `AUTH` - Authentification
-
-**Syntaxe :**
-
-```
-AUTH <username> <md5_hash>
-```
-
-**Paramètres :**
-
-- `username` : Identifiant client (ex: "alizon")
-- `md5_hash` : Hash MD5 du mot de passe (32 caractères hexa)
-
-**Exemple :**
-
-```
+**Exemple** :
 AUTH alizon e10adc3949ba59abbe56e057f20f883e
-```
 
-**Réponses possibles :**
+### CREATE - Création d'un bordereau
 
-```
-AUTH_SUCCESS
-ERROR AUTH_FAILED
-ERROR INVALID_MD5_FORMAT
-ERROR MISSING_CREDENTIALS
-ERROR ALREADY_AUTHENTICATED
-```
+CREATE <commande_id> <destination>
 
-### 4.2 `CREATE` - Création de bordereau
+**Paramètres** :
 
-**Syntaxe :**
+- `commande_id` : Numéro de commande Alizon (entier positif)
+- `destination` : Adresse de livraison (chaîne, peut contenir des espaces)
 
-```
-CREATE <commande_id>
-```
+**Réponses possibles** :
 
-**Paramètres :**
+- `<bordereau>` (10 chiffres) : Bordereau créé avec succès
+- `<bordereau_existant>` : Bordereau déjà existant pour cette commande
+- `<commande_id>` : Commande mise en file d'attente (capacité pleine)
+- `ERROR MISSING_PARAMETERS` : Paramètres manquants
+- `ERROR INVALID_COMMANDE_ID` : ID de commande invalide
+- `ERROR DB_QUERY` : Erreur base de données
 
-- `commande_id` : Identifiant unique de commande Alizon (50 caractères max)
+**Exemple** :
+CREATE 1234567890 "10 Rue de la Paix, 75001 Paris"
 
-**Exemple :**
+### STATUS - Consultation d'un colis
 
-```
-CREATE 123456789
-```
+STATUS <bordereau>
 
-**Réponses possibles :**
+**Paramètres** :
 
-```
-BORDEREAU 3847562019
-ERROR NOT_AUTHENTICATED
-ERROR MISSING_COMMANDE_ID
-ERROR CAPACITE
-ERROR DB_QUERY
-ERROR DB_INSERT
-```
+- `bordereau` : Numéro de bordereau (10 chiffres)
 
-**Comportement :**
+**Format de réponse** :
+<bordereau>|<commande_id>|<destination>|<localisation>|<etape>|<date_etape>|<type_livraison>|<chemin_image>
 
-- Si la commande existe déjà, retourne le même bordereau
-- Vérifie la capacité disponible (max configuré)
+**Étapes possibles** :
 
-### 4.3 `STATUS` - Consultation d'un colis
+1. Entrepôt Alizon
+2. En transit vers plateforme transporteur
+3. Arrivé chez transporteur
+4. Départ vers plateforme régionale
+5. Arrivé plateforme régionale
+6. Départ vers centre local
+7. Arrivé centre local
+8. Départ pour livraison finale
+9. Chez destinataire
 
-**Syntaxe :**
+**Types de livraison (étape 9 uniquement)** :
 
-```
-STATUS <num_bordereau>
-```
+- `MAINS_PROPRES` : Livré en mains propres
+- `ABSENT` : Livré en l'absence (avec image)
+- `REFUSE` : Colis refusé (avec raison)
 
-**Paramètres :**
+**Réponses d'erreur** :
 
-- `num_bordereau` : Numéro de bordereau (10 chiffres)
+- `ERROR BORDEREAU_NOT_FOUND` : Bordereau non trouvé
+- `ERROR DB_QUERY` : Erreur base de données
 
-**Exemple :**
+**Exemple** :
+STATUS 6864770470
+6864770470|333333333|10 Rue Exemple|Chez destinataire|9|2026-01-19 09:13:45|ABSENT|/var/www/images/boite_lettres.jpg
 
-```
-STATUS 3847562019
-```
+### QUEUE_STATUS - État de la file d'attente
 
-**Réponse normale :**
+QUEUE_STATUS
 
-```
-ETAPE <num>|<localisation>|<date>|<type_livraison>|<raison_refus>
-```
+**Format de réponse** :
+QUEUE_STATUS En attente: <nb_attente>, Capacité actuelle: <actuel>/<max>, Places libres: <places_libres>
 
-**Exemple de réponse :**
+**Exemple** :
+QUEUE_STATUS En attente: 2, Capacité actuelle: 3/3, Places libres: 0
 
-```
-ETAPE 5|Plateforme régionale Lyon|2026-01-09 14:32:05||
-```
+### HELP - Aide
 
-**Réponse avec image (étape 9) :**
-
-```
-ETAPE 9|Chez destinataire|2026-01-09 14:32:05|ABSENT|
----IMAGE---
-[binaire image JPEG]
-```
-
-**Réponses d'erreur :**
-
-```
-ERROR NOT_AUTHENTICATED
-ERROR MISSING_BORDEREAU
-ERROR NOT_FOUND
-ERROR DB_QUERY
-```
-
-### 4.4 `HELP` - Aide
-
-**Syntaxe :**
-
-```
 HELP
-```
 
-**Réponse :** Documentation texte formatée des commandes.
+Affiche la liste des commandes disponibles.
 
-### 4.5 `QUIT` / `EXIT` - Déconnexion
+### QUIT/EXIT - Déconnexion
 
-**Syntaxe :**
-
-```
 QUIT
-```
 
 ou
-
-```
 EXIT
-```
 
-**Réponse :**
+## Gestion de la capacité
 
-```
-BYE
-```
+Le serveur a une capacité limitée de prise en charge. Quand la capacité est atteinte :
 
-## 5. **Format des réponses**
+1. Les nouvelles commandes `CREATE` sont mises en file d'attente
+2. Quand un colis passe de l'étape 4 à 5, une place se libère
+3. La file d'attente est traitée automatiquement
 
-### 5.1 Structure des réponses
+## Fichier d'authentification
 
-```
-SUCCÈS: <données>
-ERREUR: ERROR <type_erreur>
-```
+Format du fichier `auth.txt` :
+username:md5_hash
 
-### 5.2 Format `ETAPE`
+Exemple :
+alizon:e10adc3949ba59abbe56e057f20f883e
+admin:21232f297a57a5a743894a0e4a801fc3
 
-```
-ETAPE <etape>|<localisation>|<date>|<type>|<raison>
-```
+## Codes d'erreur
 
-**Champs :**
+- `ERROR NOT_AUTHENTICATED` : Commande sans authentification
+- `ERROR UNKNOWN_COMMAND` : Commande inconnue
+- `ERROR DB_*` : Erreurs base de données
+- `ERROR MISSING_*` : Paramètres manquants
+- `ERROR INVALID_*` : Format invalide
 
-1. **etape** : Numéro de l'étape (1-9)
-2. **localisation** : Lieu actuel du colis
-3. **date** : Date de la dernière mise à jour (format MySQL DATETIME)
-4. **type** : Type de livraison (vide sauf étape 9)
-   - `MAINS_PROPRES` : Livré en mains propres
-   - `ABSENT` : Livré en l'absence
-   - `REFUSE` : Refusé
-5. **raison** : Raison du refus (vide sauf refus)
+## Logs
 
-### 5.3 Codes d'erreur
+Toutes les actions sont logguées avec :
 
-| Code erreur             | Description                | Solution                         |
-| ----------------------- | -------------------------- | -------------------------------- |
-| `NOT_AUTHENTICATED`     | Client non authentifié     | Exécuter `AUTH` d'abord          |
-| `AUTH_FAILED`           | Identifiants incorrects    | Vérifier username/mdp            |
-| `INVALID_MD5_FORMAT`    | Hash MD5 invalide          | Générer un nouveau hash          |
-| `MISSING_CREDENTIALS`   | Paramètres manquants       | Fournir tous les paramètres      |
-| `ALREADY_AUTHENTICATED` | Déjà authentifié           | Continuer sans ré-auth           |
-| `MISSING_COMMANDE_ID`   | ID commande manquant       | Spécifier un ID commande         |
-| `MISSING_BORDEREAU`     | Bordereau manquant         | Spécifier un numéro de bordereau |
-| `CAPACITE`              | Capacité maximale atteinte | Réessayer plus tard              |
-| `NOT_FOUND`             | Bordereau non trouvé       | Vérifier le numéro               |
-| `DB_QUERY`              | Erreur base de données     | Contacter l'administrateur       |
-| `DB_INSERT`             | Erreur insertion BD        | Contacter l'administrateur       |
-| `UNKNOWN_COMMAND`       | Commande inconnue          | Vérifier la syntaxe              |
-
-## 6. **Étapes de livraison**
-
-| Étape | Localisation            | Description                       |
-| ----- | ----------------------- | --------------------------------- |
-| **1** | Entrepôt Alizon         | Bordereau créé, colis chez Alizon |
-| **2** | En transit              | Prise en charge par transporteur  |
-| **3** | Plateforme transporteur | Arrivée chez transporteur         |
-| **4** | En transit              | Départ vers plateforme régionale  |
-| **5** | Plateforme régionale    | Arrivée plateforme régionale      |
-| **6** | En transit              | Départ vers centre local          |
-| **7** | Centre local            | Arrivée centre local              |
-| **8** | En livraison            | Départ pour livraison finale      |
-| **9** | Chez destinataire       | Livré/absent/refusé               |
-
-## 7. **Gestion de la capacité**
-
-### 7.1 Concept
-
-- Capacité configurable au démarrage (`--capacity`)
-- Seulement les colis aux étapes **1 à 4** comptent dans la capacité
-- Un colis à l'étape **5** libère une place
-- File gérée via table `_delivraptor_file_prise_en_charge`
-
-### 7.2 Comportement
-
-```
-CREATE → si capacité disponible → insertion dans file
-STATUS étape 5 → suppression de la file
-CREATE → vérification file avant création
-```
-
-## 8. **Authentification**
-
-### 8.1 Format du fichier d'authentification
-
-```
-username:md5hash
-username2:md5hash2
-# Commentaire
-```
-
-### 8.2 Génération du hash MD5
-
-```bash
-# Linux
-echo -n "motdepasse" | md5sum
-
-# PHP
-<?php echo md5("motdepasse"); ?>
-```
-
-## 9. **Gestion des images (étape 9)**
-
-### 9.1 Format
-
-```
-ETAPE 9|...|ABSENT|
----IMAGE---
-[binaire JPEG]
-```
-
-### 9.2 Caractéristiques
-
-- Seulement pour `ABSENT` (livraison en absence)
-- Format JPEG recommandé
-- Taille max conseillée : 1MB
-- Terminaison : fin de socket (EOF)
-
-## 10. **Exemples complets**
-
-### 10.1 Session réussie
-
-```
-Client: AUTH alizon e10adc3949ba59abbe56e057f20f883e
-Server: AUTH_SUCCESS
-
-Client: CREATE 1001
-Server: BORDEREAU 3847562019
-
-Client: STATUS 3847562019
-Server: ETAPE 1|Entrepôt Alizon|2026-01-09 14:32:05||
-
-Client: QUIT
-Server: BYE
-```
-
-### 10.2 Session avec erreurs
-
-```
-Client: CREATE 1002
-Server: ERROR NOT_AUTHENTICATED
-
-Client: AUTH alizon mauvais_hash
-Server: ERROR AUTH_FAILED
-
-Client: AUTH alizon e10adc3949ba59abbe56e057f20f883e
-Server: AUTH_SUCCESS
-
-Client: CREATE 1002
-Server: BORDEREAU 9876543210
-```
-
-## 11. **Sécurité**
-
-### 11.1 Mesures
-
-- Authentification obligatoire
-- Hash MD5 des mots de passe
-- Validation des formats
-- Timeout de connexion (10s)
-
-### 11.2 Limitations
-
-- Pas de chiffrement (protocole en clair)
-- Pas de protection contre les attaques brute-force
-
-## 12. **Codes de retour serveur**
-
-### 12.1 En cas de succès
-
-Le serveur reste actif après chaque commande.
-
-### 12.2 En cas d'erreur
-
-- Erreur client : message d'erreur, connexion maintenue
-- Erreur serveur : déconnexion immédiate
-
-## 13. **Annexes**
-
-### 13.1 Fichiers de configuration
-
-- `auth.txt` : Fichier d'authentification
-- `delivraptor.log` : Fichier de logs
-- Options ligne de commande :
-  ```bash
-  ./delivraptor_server --port 8080 --capacity 5 --auth auth.txt --log delivraptor.log
-  ```
-
-### 13.2 Tables MySQL
-
-```sql
--- Colis en cours
-_delivraptor_colis
-
--- Gestion capacité
-_delivraptor_file_prise_en_charge
-
--- Historique
-_delivraptor_colis_historique
-```
-
-### 13.3 Scripts utilitaires
-
-- `client.php` : Client de test
-- `simulateur.php` : Simulation avancement colis
-- `test_integration.sh` : Tests complets
-
-## 14. **Dépannage**
-
-### 14.1 Problèmes courants
-
-1. **Connexion refusée** : Vérifier que le serveur tourne (`netstat -tulpn | grep :8080`)
-2. **Authentification échouée** : Vérifier le hash MD5
-3. **Capacité atteinte** : Attendre ou augmenter capacité
-4. **Bordereau non trouvé** : Vérifier le numéro
-
-### 14.2 Logs
-
-Consulter `delivraptor.log` pour les détails.
-
----
-
-## **Résumé des commandes**
-
-| Commande | Syntaxe              | Authentification | Réponse                    |
-| -------- | -------------------- | ---------------- | -------------------------- |
-| `AUTH`   | `AUTH user hash`     | Non              | `AUTH_SUCCESS` ou `ERROR`  |
-| `CREATE` | `CREATE commande_id` | Oui              | `BORDEREAU num` ou `ERROR` |
-| `STATUS` | `STATUS bordereau`   | Oui              | `ETAPE ...` ou `ERROR`     |
-| `HELP`   | `HELP`               | Non              | Texte d'aide               |
-| `QUIT`   | `QUIT`               | Non              | `BYE`                      |
-
-
+- Date et heure
+- Adresse IP et port client
+- Nom d'utilisateur (si authentifié)
+- Action effectuée
+- Message détaillé

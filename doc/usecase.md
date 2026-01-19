@@ -1,189 +1,261 @@
-# **DOCUMENTATION CAS D'UTILISATION **
+# Délivraptor - Cas d'utilisation pratiques
 
-## 1. Installation et Démarrage Rapide
+## Table des matières
+1. [Introduction](#introduction)
+2. [Configuration initiale](#configuration-initiale)
+3. [Tests avec Telnet](#tests-avec-telnet)
+4. [Création et suivi de colis](#création-et-suivi-de-colis)
+5. [Gestion de la capacité](#gestion-de-la-capacité)
+6. [Simulation de progression](#simulation-de-progression)
+7. [Types de livraison](#types-de-livraison)
 
-### 1.1 Démarrer le serveur
+## Introduction
 
+Ce document présente les cas d'utilisation pratiques du système Délivraptor. Vous y trouverez des exemples concrets d'utilisation du serveur de livraison, depuis la connexion jusqu'au suivi complet d'un colis.
+
+## Configuration initiale
+
+### 1. Démarrer le serveur
 ```bash
-# Compilation
-gcc main.c $(mysql_config --cflags --libs) -o delivraptor_server
+# Avec paramètres par défaut
+./delivraptor_server
 
-# Démarrage
-./delivraptor_server -p 8080 -c 3 -a auth.txt -l delivraptor.log
+# Avec configuration personnalisée
+./delivraptor_server -p 9000 -c 3 -a auth.txt -l server.log
 ```
 
-### 1.2 Vérifier que le serveur fonctionne
+## Tests avec Telnet
 
+### Session complète d'exemple
 ```bash
-# Test de connexion simple
-telnet localhost 8080
-# Tapez HELP puis QUIT
-```
-
-## 2. Scénarios d'Utilisation
-
-### 2.1 Scénario 1 : Première connexion
-
-**Objectif** : Se connecter et créer un premier bordereau
-
-```bash
-# Étape 1: Authentification
 $ telnet localhost 8080
 Trying 127.0.0.1...
 Connected to localhost.
 Escape character is '^]'.
+```
+
+### 1. Obtenir de l'aide
+```
+HELP
+```
+**Réponse :**
+```
+Commandes disponibles:
+  AUTH <username> <password_md5>     - Authentification
+  CREATE <commande_id> <destination> - Créer un bordereau
+  STATUS <bordereau>                 - Voir le statut d'un colis
+  QUEUE_STATUS                       - Voir l'état de la file d'attente
+  HELP                               - Afficher cette aide
+  QUIT/EXIT                          - Se déconnecter
+```
+
+### 2. S'authentifier
+```
 AUTH alizon e10adc3949ba59abbe56e057f20f883e
-AUTH_SUCCESS
+```
+**Réponses possibles :**
+- `AUTH_SUCCESS` : Authentification réussie
+- `ERROR AUTH_FAILED` : Échec d'authentification
 
-# Étape 2: Création d'un bordereau
-CREATE 123456789
-BORDEREAU 3847562019 # Numero de bordereau donné à titre d'example 
+### 3. Créer un premier colis
+```
+CREATE 1000000001 "10 Rue de la Paix, 75001 Paris"
+```
+**Réponse :**
+```
+1467226081
+```
+*(Numéro de bordereau à 10 chiffres)*
 
-# Étape 3: Vérification
-STATUS 3847562019
-ETAPE 1|Entrepôt Alizon|2026-01-09 15:30:00||
+### 4. Consulter son statut
+```
+STATUS 1467226081
+```
+**Réponse (étape 1) :**
+```
+1467226081|1000000001|10 Rue de la Paix, 75001 Paris|Entrepôt Alizon|1|2026-01-19 10:30:45||
+```
 
-# Étape 4: Déconnexion
+### 5. Se déconnecter
+```
 QUIT
+```
+**Réponse :**
+```
 BYE
 Connection closed by foreign host.
 ```
 
-### 2.2 Scénario 2 : Gestion de la capacité
+## Création et suivi de colis
 
-**Objectif** : Voir ce qui se passe quand la file est pleine
-
-```bash
-# Avec capacité = 3, créer 4 colis
-CREATE 123456
-BORDEREAU 1111111111
-
-CREATE 098765
-BORDEREAU 2222222222
-
-CREATE 385173
-BORDEREAU 3333333333
-
-CREATE 9735241  # Doit échouer !
-ERROR CAPACITE
+### Cas 1 : Création normale
+**Commande :**
+```
+CREATE 1000000002 "25 Avenue Montaigne, 75008 Paris"
+```
+**Réponse réussie :**
+```
+813692617
 ```
 
-### 2.3 Scénario 3 : Simulation complète
+### Cas 2 : Commande déjà existante
+**Commande :**
+```
+CREATE 1000000002 "Nouvelle adresse différente"
+```
+**Réponse :**
+```
+813692617
+```
+*Le même bordereau est retourné, évitant les doublons*
 
-**Objectif** : Suivre un colis de la création à la livraison
+### Cas 3 : ID de commande invalide
+**Commande :**
+```
+CREATE 0 "Adresse test"
+```
+**Réponse :**
+```
+ERROR INVALID_COMMANDE_ID
+```
 
+### Cas 4 : Suivi d'un colis en transit
+**Commande :**
+```
+STATUS 6864770470
+```
+**Réponse (étape 4) :**
+```
+6864770470|333333333|15 Rue du Commerce|Départ vers plateforme régionale|4|2026-01-19 11:45:30||
+```
+
+### Cas 5 : Bordereau inexistant
+**Commande :**
+```
+STATUS 0000000000
+```
+**Réponse :**
+```
+ERROR BORDEREAU_NOT_FOUND
+```
+
+## Gestion de la capacité
+
+### Situation 1 : Capacité disponible
+**Serveur démarré avec :** `-c 3` (capacité de 3 colis)
+
+**Commande :**
+```
+QUEUE_STATUS
+```
+**Réponse :**
+```
+QUEUE_STATUS En attente: 0, Capacité actuelle: 1/3, Places libres: 2
+```
+
+### Situation 2 : Capacité pleine
+Après création de 3 colis :
+```
+QUEUE_STATUS
+```
+**Réponse :**
+```
+QUEUE_STATUS En attente: 0, Capacité actuelle: 3/3, Places libres: 0
+```
+
+### Situation 3 : Nouveau colis avec capacité pleine
+**Commande :**
+```
+CREATE 1000000004 "30 Rue de Rivoli, 75004 Paris"
+```
+**Réponse :**
+```
+1000000004
+```
+*Le numéro de commande est retourné (pas un bordereau), indiquant la mise en file d'attente*
+
+**Vérification :**
+```
+QUEUE_STATUS
+```
+**Réponse :**
+```
+QUEUE_STATUS En attente: 1, Capacité actuelle: 3/3, Places libres: 0
+```
+
+### Situation 4 : Libération de capacité
+Quand un colis passe de l'étape 4 à 5, une place se libère automatiquement et la file d'attente est traitée.
+
+## Simulation de progression
+
+### 1. Lancement manuel du simulateur
 ```bash
-# 1. Création
-CREATE SIMU_001
-BORDEREAU 9998887776
-
-# 2. Consultation initiale
-STATUS 9998887776
-ETAPE 1|Entrepôt Alizon|2026-01-09 15:35:00||
-
-# 3. Lancer le simulateur (dans un autre terminal)
 php simulateur.php
-
-# 4. Re-vérifier le statut
-STATUS 9998887776
-ETAPE 2|En transit vers plateforme transporteur|2026-01-09 15:36:00||
-
-# 5. Lancer plusieurs fois le simulateur
-# (dans l'autre terminal, exécuter plusieurs fois)
-php simulateur.php
-php simulateur.php
-php simulateur.php
-
-# 6. Vérifier la progression
-STATUS 9998887776
-# Après plusieurs simulations, vous verrez :
-# Étape 3, 4, 5... jusqu'à 9
+```
+**Sortie :**
+```
+[Nettoyage] Colis aux étapes >= 5 retirés de la file de prise en charge
+Bordereau 1467226081 : Étape 1 → 2 (En transit vers plateforme transporteur)
+Bordereau 813692617 : Étape 2 → 3 (Arrivé chez transporteur)
+=== Simulation terminée ===
+2 colis avancés d'une étape.
 ```
 
-## 4. Intégration avec Alizon (exemples PHP)
-
-### 4.1 Dans la page de paiement
-
-```php
-// Lorsqu'un client valide son paiement
-try {
-    $client = new DelivraptorClient('localhost', 8080);
-    $client->connect();
-    $client->authenticate('alizon', 'alizon2024');
-
-    $bordereau = $client->createBordereau($_SESSION['commande_id']);
-
-    // Sauvegarder dans la base Alizon
-    $db->query("UPDATE commandes SET bordereau = '$bordereau' WHERE id = '{$_SESSION['commande_id']}'");
-
-    echo "Votre numéro de suivi : $bordereau";
-
-} catch (Exception $e) {
-    echo "Erreur : " . $e->getMessage();
-    // Gérer l'erreur (retour au panier, message utilisateur...)
-}
-```
-
-### 4.2 Dans la page de suivi
-
-```php
-// Quand un client consulte sa commande
-$bordereau = $_GET['tracking'];
-
-try {
-    $client = new DelivraptorClient('localhost', 8080);
-    $client->connect();
-    $client->authenticate('alizon', 'alizon2024');
-
-    $status = $client->getStatus($bordereau);
-
-    echo "<h3>Suivi de votre colis</h3>";
-    echo "<p><strong>Numéro :</strong> $bordereau</p>";
-    echo "<p><strong>Statut :</strong> " . htmlspecialchars($status['etape']) . "</p>";
-    echo "<p><strong>Localisation :</strong> " . htmlspecialchars($status['localisation']) . "</p>";
-
-    if ($status['image']) {
-        echo "<h4>Photo de livraison :</h4>";
-        echo "<img src='" . htmlspecialchars($status['image']) . "' style='max-width: 500px;'>";
-    }
-
-} catch (Exception $e) {
-    echo "<p class='error'>Impossible de récupérer le suivi pour le moment.</p>";
-}
-```
-
-## 5. Dépannage Pratique
-
-### 5.1 "Connexion refusée"
-
+### 2. Configuration automatique (cron)
+Ajouter dans la crontab :
 ```bash
-# Vérifier que le serveur tourne
-ps aux | grep delivraptor_server
+# Éditer la crontab
+crontab -e
 
-# Vérifier le port
-sudo netstat -tulpn | grep :8080
-
-# Relancer le serveur
-pkill delivraptor_server
-./delivraptor_server -p 8080 -c 3 -a auth.txt -l delivraptor.log
+# Ajouter cette ligne pour exécuter toutes les minutes
+* * * * * /usr/bin/php /chemin/complet/simulateur.php >> /var/log/delivraptor_sim.log 2>&1
 ```
 
-### 5.2 "ERROR CAPACITE"
+### 3. Suivi de la progression
+**Étape par étape :**
 
-```bash
-# Voir combien de colis sont dans la file
-mysql -u pperche -pgrognasseEtCompagnie delivraptor -e "SELECT COUNT(*) FROM _delivraptor_file_prise_en_charge;"
+| Étape | Localisation | Commande STATUS |
+|-------|-------------|-----------------|
+| 1 | Entrepôt Alizon | `STATUS 1467226081` → `...|Entrepôt Alizon|1|...` |
+| 2 | En transit vers plateforme transporteur | `...|En transit vers plateforme transporteur|2|...` |
+| 3 | Arrivé chez transporteur | `...|Arrivé chez transporteur|3|...` |
+| 4 | Départ vers plateforme régionale | `...|Départ vers plateforme régionale|4|...` |
+| 5 | Arrivé plateforme régionale | `...|Arrivé plateforme régionale|5|...` |
+| 6 | Départ vers centre local | `...|Départ vers centre local|6|...` |
+| 7 | Arrivé centre local | `...|Arrivé centre local|7|...` |
+| 8 | Départ pour livraison finale | `...|Départ pour livraison finale|8|...` |
+| 9 | Chez destinataire | `...|Chez destinataire|9|...` |
 
-# Libérer manuellement un colis (si besoin)
-mysql -u pperche -pgrognasseEtCompagnie delivraptor -e "DELETE FROM _delivraptor_file_prise_en_charge"
+## Types de livraison (étape 9)
+
+### Type 1 : Livraison en mains propres
+**Commande :**
+```
+STATUS 5158575785
+```
+**Réponse :**
+```
+5158575785|555555555|42 Rue Exemple|Chez destinataire|9|2026-01-19 14:25:10|MAINS_PROPRES|
 ```
 
-### 5.4 Problèmes MySQL
-
-```bash
-# Vérifier la connexion
-mysql -u pperche -pgrognasseEtCompagnie delivraptor -e "SELECT 1;"
-
-# Réinitialiser la base (attention !)
-mysql -u pperche -pgrognasseEtCompagnie delivraptor < schema.sql
+### Type 2 : Livraison en absence
+**Commande :**
 ```
+STATUS 818949116
+```
+**Réponse :**
+```
+818949116|222222222|5 Rue de la République|Chez destinataire|9|2026-01-19 12:15:30|ABSENT|/var/www/images/boite_aux_lettres.jpg
+```
+*Le chemin de l'image est fourni pour preuve de livraison*
+
+### Type 3 : Colis refusé
+**Commande :**
+```
+STATUS 3643866199
+```
+**Réponse :**
+```
+3643866199|111111111|20 Avenue Foch|Chez destinataire|9|2026-01-19 12:30:15|REFUSE|Destinataire absent
+```
+*La raison du refus est spécifiée*

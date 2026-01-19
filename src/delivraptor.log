@@ -75,3 +75,22 @@
 [2026-01-19 13:59:13] [127.0.0.1:57687] [alizon] CREATE: Nouveau bordereau 8547685869 créé pour commande 902374638
 [2026-01-19 13:59:23] [127.0.0.1:57687] [alizon] CREATE: Commande 456287822 mise en file d'attente (capacité: 3/3)
 [2026-01-19 14:03:26] [127.0.0.1:57687] [alizon] CREATE: Nouveau bordereau 1891746851 créé pour commande 223328736
+[2026-01-19 14:10:15] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-19 14:10:18] [127.0.0.1:57734] CONNECT: Nouvelle connexion client
+[2026-01-19 14:10:18] [127.0.0.1:57734] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-19 14:10:20] [127.0.0.1:57734] QUEUE_STATUS: Tentative sans authentification
+[2026-01-19 14:10:36] [127.0.0.1:57734] [alizon] AUTH: Authentification réussie
+[2026-01-19 14:10:42] [127.0.0.1:57734] [alizon] ERROR: e10adc3949ba59abbe56e057f20f883e
+[2026-01-19 14:10:52] [127.0.0.1:57734] [alizon] QUEUE_STATUS: QUEUE_STATUS En attente: 0, Capacité actuelle: 0/3, Places libres: 3
+
+[2026-01-19 14:24:50] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-19 14:24:52] [127.0.0.1:57799] CONNECT: Nouvelle connexion client
+[2026-01-19 14:24:52] [127.0.0.1:57799] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-19 14:25:08] [127.0.0.1:57799] [alizon] AUTH: Authentification réussie
+[2026-01-19 14:25:26] [127.0.0.1:57799] [alizon] CREATE: Nouveau bordereau 9825145792 créé pour commande 123098635
+[2026-01-19 14:32:29] [127.0.0.1:57799] [alizon] QUIT: Déconnexion demandée par client
+[2026-01-19 14:32:29] [127.0.0.1:57799] [alizon] EXIT: Processus fils terminé
+[2026-01-19 14:39:50] [127.0.0.1:57845] CONNECT: Nouvelle connexion client
+[2026-01-19 14:39:50] [127.0.0.1:57845] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-19 14:40:07] [127.0.0.1:57845] [alizon] AUTH: Authentification réussie
+[2026-01-19 14:41:04] [127.0.0.1:57845] [alizon] CREATE: Nouveau bordereau 482502582 créé pour commande 999222645
