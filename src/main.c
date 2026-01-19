@@ -218,6 +218,124 @@ int require_auth(struct ClientSession *session) {
     return 1;
 }
 
+// FONCTIONS COMMANDES CLIENT
+
+/**
+ * status() - Affiche le statut d'un bordereau
+ */
+void status(struct ClientSession *session, char *bordereau, struct ServerConfig config, MYSQL *conn) {
+    if (!require_auth(session)) {
+        write_log(config.log_file, session->client_ip, session->client_port,
+                  session->username, "STATUS", "Tentative sans authentification");
+        return;
+    }
+
+    char response[BUFFER_SIZE];
+    char query[512];
+    
+    snprintf(query, sizeof(query),
+             "SELECT noCommande, destination, localisation, etape, date_etape "
+             "FROM _delivraptor_colis "
+             "WHERE numBordereau = %s",
+             bordereau);
+    
+    if (mysql_query(conn, query)) {
+        snprintf(response, sizeof(response), "ERROR DB_QUERY\n");
+        send(session->client_socket, response, strlen(response), 0);
+        return;
+    }
+    
+    MYSQL_RES *result = mysql_store_result(conn);
+    if (!result) {
+        snprintf(response, sizeof(response), "ERROR DB_RESULT\n");
+        send(session->client_socket, response, strlen(response), 0);
+        return;
+    }
+    
+    MYSQL_ROW row = mysql_fetch_row(result);
+    if (row) {
+        snprintf(response, sizeof(response),
+                 "%s|%s|%s|%s|%s|%s\n",
+                 bordereau, row[0], row[1], row[2], row[3], row[4]);
+        
+        write_log(config.log_file, session->client_ip, session->client_port,
+                  session->username, "STATUS", response);
+    } else {
+        snprintf(response, sizeof(response), "ERROR BORDEREAU_NOT_FOUND\n");
+        
+        write_log(config.log_file, session->client_ip, session->client_port,
+                  session->username, "STATUS", "Bordereau non trouvé");
+    }
+    
+    send(session->client_socket, response, strlen(response), 0);
+    mysql_free_result(result);
+}
+
+/**
+ * status_queue() - Affiche le statut de la file d'attente
+ */
+void status_queue(struct ClientSession *session, struct ServerConfig config, MYSQL *conn) {
+    if (!require_auth(session)) {
+        write_log(config.log_file, session->client_ip, session->client_port,
+                  session->username, "QUEUE_STATUS", "Tentative sans authentification");
+        return;
+    }
+
+    char response[BUFFER_SIZE];
+    char query[512];
+    
+    snprintf(query, sizeof(query),
+             "SELECT COUNT(*) FROM _delivraptor_queue WHERE traite = 0");
+    
+    if (mysql_query(conn, query)) {
+        snprintf(response, sizeof(response), "ERROR DB_QUERY\n");
+        send(session->client_socket, response, strlen(response), 0);
+        return;
+    }
+    
+    MYSQL_RES *result = mysql_store_result(conn);
+    if (!result) {
+        snprintf(response, sizeof(response), "ERROR DB_RESULT\n");
+        send(session->client_socket, response, strlen(response), 0);
+        return;
+    }
+    
+    MYSQL_ROW row = mysql_fetch_row(result);
+    if (row) {
+        int en_attente = atoi(row[0]);
+        int current_load = get_capacite_actuelle(conn);
+        int places_libres = (current_load >= 0) ? (config.capacity - current_load) : 0;
+        
+        snprintf(response, sizeof(response),
+                 "QUEUE_STATUS En attente: %d, Capacité actuelle: %d/%d, Places libres: %d\n",
+                 en_attente, current_load, config.capacity, places_libres);
+        
+        write_log(config.log_file, session->client_ip, session->client_port,
+                  session->username, "QUEUE_STATUS", response);
+    } else {
+        snprintf(response, sizeof(response), "ERROR QUEUE_STATUS_FAILED\n");
+    }
+    
+    send(session->client_socket, response, strlen(response), 0);
+    mysql_free_result(result);
+}
+
+/**
+ * help() - Affiche l'aide des commandes disponibles
+ */
+void help(struct ClientSession *session) {
+    char help_message[] = 
+        "Commandes disponibles:\n"
+        "  AUTH <username> <password_md5>     - Authentification\n"
+        "  CREATE <commande_id> <destination> - Créer un bordereau\n"
+        "  STATUS <bordereau>                 - Voir le statut d'un colis\n"
+        "  QUEUE_STATUS                       - Voir l'état de la file d'attente\n"
+        "  HELP                               - Afficher cette aide\n"
+        "  QUIT/EXIT                          - Se déconnecter\n";
+    
+    send(session->client_socket, help_message, strlen(help_message), 0);
+}
+
 /**
  * create() - Traite la commande de création de bordereau CREATE
  * Version avec file d'attente
@@ -252,7 +370,7 @@ void create(struct ClientSession *session, int commande_id, char *destination,
     MYSQL_RES *result = mysql_store_result(conn);
     if (result && mysql_num_rows(result) > 0) {
         MYSQL_ROW row = mysql_fetch_row(result);
-        snprintf(response, sizeof(response), "BORDEREAU %s\n", row[0]);
+        snprintf(response, sizeof(response), "%s\n", row[0]);
         send(session->client_socket, response, strlen(response), 0);
         mysql_free_result(result);
         
@@ -325,7 +443,7 @@ void create(struct ClientSession *session, int commande_id, char *destination,
             return;
         }
         
-        snprintf(response, sizeof(response), "QUEUED %d\n", commande_id);
+        snprintf(response, sizeof(response), "%d\n", commande_id);
         send(session->client_socket, response, strlen(response), 0);
         
         char log_msg[256];
@@ -550,278 +668,6 @@ void auth(struct ClientSession *session, char *username, char *password_md5,
     send(session->client_socket, reponse, strlen(reponse), 0);
 }
 
-
-/**
- * status() - Traite la commande de consultation de statut STATUS
- */
-void status(struct ClientSession *session, char *bordereau, struct ServerConfig config, MYSQL *conn) {
-    if(!require_auth(session)) {
-        write_log(config.log_file, session->client_ip, session->client_port,
-                  session->username, "STATUS", "Tentative sans authentification");
-        return;
-    }
-
-    char query[256];
-    char response[BUFFER_SIZE];
-
-    snprintf(query, sizeof(query),
-             "SELECT etape, localisation, date_etape, livraison_type, refus_raison, photo_path "
-             "FROM _delivraptor_colis WHERE numBordereau = %s", bordereau);
-    
-    if (mysql_query(conn, query)) {
-        snprintf(response, sizeof(response), "ERROR DB_QUERY\n");
-        send(session->client_socket, response, strlen(response), 0);
-        
-        write_log(config.log_file, session->client_ip, session->client_port,
-                  session->username, "STATUS", bordereau);
-        return;
-    }
-    
-    MYSQL_RES *result = mysql_store_result(conn);
-    if (!result || mysql_num_rows(result) == 0) {
-        snprintf(response, sizeof(response), "ERROR NOT_FOUND\n");
-        send(session->client_socket, response, strlen(response), 0);
-        if (result) mysql_free_result(result);
-        
-        write_log(config.log_file, session->client_ip, session->client_port,
-                  session->username, "STATUS", bordereau);
-        return;
-    }
-    
-    MYSQL_ROW row = mysql_fetch_row(result);
-    
-    snprintf(response, sizeof(response), 
-             "ETAPE %s|%s|%s|%s|%s\n",
-             row[0] ? row[0] : "",
-             row[1] ? row[1] : "",
-             row[2] ? row[2] : "",
-             row[3] ? row[3] : "",
-             row[4] ? row[4] : "");
-    
-    send(session->client_socket, response, strlen(response), 0);
-    
-    write_log(config.log_file, session->client_ip, session->client_port,
-                  session->username, "STATUS", bordereau);
-    // Vérifier si besoin de libérer la file (étape 4 -> 5)
-    if (row[0] && atoi(row[0]) == 5) {
-        long long num_bordereau = atoll(bordereau);
-        liberer_file_colis(conn, num_bordereau);
-        
-        write_log(config.log_file, session->client_ip, session->client_port,
-                  session->username, "STATUS", bordereau);
-    }
-    
-    // Gestion de l'image pour l'étape 9
-    if (row[0] && atoi(row[0]) == 9 && row[5] && strlen(row[5]) > 0) {
-        FILE *img_file = fopen(row[5], "rb");
-        if (img_file) {
-            send(session->client_socket, "---IMAGE---\n", 12, 0);
-            
-            char buffer[1024];
-            size_t bytes_read;
-            
-            while ((bytes_read = fread(buffer, 1, sizeof(buffer), img_file)) > 0) {
-                send(session->client_socket, buffer, bytes_read, 0);
-            }
-            fclose(img_file);
-            
-            write_log(config.log_file, session->client_ip, session->client_port,
-                      session->username, "STATUS", bordereau);
-        }
-    }
-    
-    mysql_free_result(result);
-}
-
-
-/**
- * status_queue() - Affiche l'état de la file d'attente
- */
-void status_queue(struct ClientSession *session, struct ServerConfig config, MYSQL *conn) {
-    if(!require_auth(session)) {
-        return;
-    }
-    
-    char query[256];
-    char response[BUFFER_SIZE * 4]; // Plus grand buffer pour liste
-    
-    snprintf(query, sizeof(query),
-             "SELECT COUNT(*) as total, "
-             "SUM(CASE WHEN traite = 0 THEN 1 ELSE 0 END) as en_attente "
-             "FROM _delivraptor_queue");
-    
-    if (mysql_query(conn, query)) {
-        snprintf(response, sizeof(response), "ERROR DB_QUERY_QUEUE\n");
-        send(session->client_socket, response, strlen(response), 0);
-        return;
-    }
-    
-    MYSQL_RES *result = mysql_store_result(conn);
-    if (!result) {
-        snprintf(response, sizeof(response), "ERROR DB_RESULT_QUEUE\n");
-        send(session->client_socket, response, strlen(response), 0);
-        return;
-    }
-    
-    MYSQL_ROW row = mysql_fetch_row(result);
-    int total = row[0] ? atoi(row[0]) : 0;
-    int en_attente = row[1] ? atoi(row[1]) : 0;
-    int traites = total - en_attente;
-    
-    mysql_free_result(result);
-    
-    // Récupérer les détails des commandes en attente
-    snprintf(query, sizeof(query),
-             "SELECT noCommande, destination, date_creation "
-             "FROM _delivraptor_queue "
-             "WHERE traite = 0 "
-             "ORDER BY date_creation ASC");
-    
-    if (mysql_query(conn, query)) {
-        snprintf(response, sizeof(response), "ERROR DB_QUERY_DETAILS\n");
-        send(session->client_socket, response, strlen(response), 0);
-        return;
-    }
-    
-    result = mysql_store_result(conn);
-    if (!result) {
-        snprintf(response, sizeof(response), "ERROR DB_RESULT_DETAILS\n");
-        send(session->client_socket, response, strlen(response), 0);
-        return;
-    }
-    
-    // Construire la réponse
-    snprintf(response, sizeof(response),
-             "QUEUE_STATUS\n"
-             "Capacité maximale: %d\n"
-             "Colis actifs: %d\n"
-             "Commandes totales: %d\n"
-             "  - Traitées: %d\n"
-             "  - En attente: %d\n\n"
-             "File d'attente (FIFO):\n",
-             config.capacity,
-             get_capacite_actuelle(conn),
-             total, traites, en_attente);
-    
-    int pos = strlen(response);
-    int compteur = 1;
-    
-    while ((row = mysql_fetch_row(result))) {
-        char ligne[256];
-        snprintf(ligne, sizeof(ligne), "%d. %s -> %s (%s)\n",
-                 compteur++, row[0], row[1], row[2]);
-        
-        // Vérifier si on dépasse la taille du buffer
-        if (pos + strlen(ligne) < sizeof(response) - 1) {
-            strcat(response + pos, ligne);
-            pos += strlen(ligne);
-        }
-    }
-    
-    mysql_free_result(result);
-    
-    if (en_attente == 0) {
-        strcat(response, "(file d'attente vide)\n");
-    }
-    
-    send(session->client_socket, response, strlen(response), 0);
-}
-
-/**
- * help() - Traite la commande HELP du protocole
- */
-void help(struct ClientSession *session) {
-    char *help_text = 
-        "╔══════════════════════════════════════════════════════════════╗\n"
-        "║               PROTOCOLE DÉLIVRAPTOR - COMMANDES              ║\n"
-        "╚══════════════════════════════════════════════════════════════╝\n\n"
-        "AUTHENTIFICATION (requise pour les autres commandes):\n"
-        "  AUTH <username> <md5_password>\n"
-        "  Exemple: AUTH alizon e10adc3949ba59abbe56e057f20f883e\n\n"
-        "GESTION DES COLIS:\n"
-        "  CREATE <commande_id>      Crée un nouveau bordereau de livraison\n"
-        "  STATUS <bordereau>        Consulte l'état d'un colis\n\n"
-        "INFORMATIONS:\n"
-        "  HELP                      Affiche cette aide\n"
-        "  QUIT                      Déconnexion propre\n"
-        "  EXIT                      Alias de QUIT\n\n"
-        "FORMAT DES RÉPONSES:\n"
-        "  • CREATE   → BORDEREAU <num>\n"
-        "  • STATUS   → ETAPE <num>|<localisation>|<date>|<type>|<raison>\n"
-        "  • AUTH     → AUTH_SUCCESS ou ERROR AUTH_FAILED\n"
-        "  • ERREURS  → ERROR <type> (CAPACITE, NOT_FOUND, DB_QUERY, etc.)\n\n"
-        "NOTES:\n"
-        "  • Toutes les commandes sont en MAJUSCULES\n"
-        "  • Le hash MD5 doit être 32 caractères hexadécimaux\n"
-        "  • L'authentification est valide pour toute la session\n"
-        "  • Une commande = une ligne terminée par \\n\n"
-        "╔══════════════════════════════════════════════════════════════╗\n"
-        "║                 Service Délivraptor - v1.0                   ║\n"
-        "╚══════════════════════════════════════════════════════════════╝\n";
-    
-    send(session->client_socket, help_text, strlen(help_text), 0);
-}
-
-/**
- * print_help() - Affiche l'aide en ligne du serveur
- */
-void print_help(const char *prog_name) {
-    const char *base_name = basename((char *)prog_name);
-    printf("╔══════════════════════════════════════════════════════════════╗\n");
-    printf("║              SERVEUR DÉLIVRAPTOR - R3.05 SAÉ 3               ║\n");
-    printf("╚══════════════════════════════════════════════════════════════╝\n\n");
-    
-    printf("DESCRIPTION:\n");
-    printf("  Simulateur de transport et de livraison de colis pour Alizon.\n");
-    printf("  Gère la prise en charge, le suivi et la livraison des colis.\n\n");
-    
-    printf("UTILISATION:\n");
-    printf("  %s [OPTIONS]\n\n", prog_name);
-    
-    printf("OPTIONS:\n");
-    printf("  -p, --port PORT        Port TCP d'écoute (1-65535)\n");
-    printf("                          Défaut: 8080\n");
-    printf("                          Exemple: -p 9090 ou --port 9090\n\n");
-    
-    printf("  -c, --capacity CAP     Capacité maximale de la file de livraison\n");
-    printf("                          Nombre de colis simultanés en étape 1-4\n");
-    printf("                          Défaut: 5\n");
-    printf("                          Exemple: -c 10 ou --capacity 10\n\n");
-    
-    printf("  -a, --auth FILE        Fichier d'authentification des clients\n");
-    printf("                          Format: username:md5hash (un par ligne)\n");
-    printf("                          Défaut: /etc/delivraptor/auth.txt\n");
-    printf("                          Exemple: -a /home/user/auth.txt\n\n");
-    
-    printf("  -l, --log FILE         Fichier de logs du serveur\n");
-    printf("                          Défaut: /var/log/delivraptor.log\n");
-    printf("                          Exemple: -l /tmp/debug.log\n\n");
-    
-    printf("  -h, --help             Affiche cette aide et quitte\n\n");
-    
-    printf("EXEMPLES D'UTILISATION:\n");
-    printf("  %s -p 8080 -c 5 -a auth.txt\n", base_name);
-    printf("    Lance le serveur sur le port 8080 avec capacité 5\n\n");
-    
-    printf("  %s --port 9090 --capacity 10 --auth /etc/delivraptor/auth.txt\n", base_name);
-    printf("    Lance le serveur sur le port 9090 avec capacité 10\n\n");
-    
-    printf("  %s --help\n", base_name);
-    printf("    Affiche ce message d'aide\n\n");
-    
-    printf("NOTES:\n");
-    printf("  • Le serveur nécessite une connexion MySQL/MariaDB fonctionnelle\n");
-    printf("  • Le fichier d'authentification doit être au format username:md5hash\n");
-    printf("  • Pour générer un hash MD5 : echo -n 'motdepasse' | md5sum\n");
-    printf("  • Les logs incluent date, IP client et actions effectuées\n");
-    printf("  • Utilisez Ctrl+C pour arrêter le serveur\n");
-    
-    printf("\n╔══════════════════════════════════════════════════════════════╗\n");
-    printf("║              IUT Lannion - Département Informatique          ║\n");
-    printf("╚══════════════════════════════════════════════════════════════╝\n");
-}
-
-
 /**
  * gerer_client() - Fonction exécutée par chaque processus fils pour gérer un client
  */
@@ -938,4 +784,169 @@ void gerer_client(struct ClientSession session, struct ServerConfig config) {
               session.username, "EXIT", "Processus fils terminé");
 
     exit(EXIT_SUCCESS);
+}
+
+/**
+ * main() - Fonction principale du serveur
+ */
+int main(int argc, char *argv[]) {
+    // Initialiser le générateur aléatoire
+    srand(time(NULL));
+    
+    // Configuration par défaut
+    struct ServerConfig config;
+    config.port = PORT_SERVER_DEFAULT;
+    config.capacity = 10;
+    config.auth_file = "auth.txt";
+    config.log_file = "server.log";
+    
+    global_log_file = config.log_file;
+    
+    // Options en ligne de commande
+    int opt;
+    while ((opt = getopt(argc, argv, "p:c:a:l:h")) != -1) {
+        switch (opt) {
+            case 'p':
+                config.port = atoi(optarg);
+                break;
+            case 'c':
+                config.capacity = atoi(optarg);
+                break;
+            case 'a':
+                config.auth_file = optarg;
+                break;
+            case 'l':
+                config.log_file = optarg;
+                global_log_file = config.log_file;
+                break;
+            case 'h':
+                printf("Usage: %s [-p port] [-c capacity] [-a auth_file] [-l log_file]\n", argv[0]);
+                printf("  -p port        Port du serveur (défaut: %d)\n", PORT_SERVER_DEFAULT);
+                printf("  -c capacity    Capacité maximale (défaut: 10)\n");
+                printf("  -a auth_file   Fichier d'authentification (défaut: auth.txt)\n");
+                printf("  -l log_file    Fichier de logs (défaut: server.log)\n");
+                printf("  -h             Afficher cette aide\n");
+                exit(EXIT_SUCCESS);
+            default:
+                fprintf(stderr, "Usage: %s [-p port] [-c capacity] [-a auth_file] [-l log_file]\n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+    
+    // Vérifier que le fichier d'authentification existe
+    FILE *auth_test = fopen(config.auth_file, "r");
+    if (!auth_test) {
+        fprintf(stderr, "Erreur: Fichier d'authentification '%s' introuvable\n", config.auth_file);
+        exit(EXIT_FAILURE);
+    }
+    fclose(auth_test);
+    
+    // Vérifier que le fichier de logs peut être ouvert
+    FILE *log_test = fopen(config.log_file, "a");
+    if (!log_test) {
+        fprintf(stderr, "Erreur: Impossible d'ouvrir le fichier de logs '%s'\n", config.log_file);
+        exit(EXIT_FAILURE);
+    }
+    fclose(log_test);
+    
+    // Initialiser la connexion principale à la base de données
+    conn = config_BD();
+    if (!conn) {
+        exit(EXIT_FAILURE);
+    }
+    
+    // Créer le socket serveur
+    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_socket < 0) {
+        perror("Erreur création socket");
+        exit(EXIT_FAILURE);
+    }
+    
+    // Permettre la réutilisation de l'adresse
+    int optval = 1;
+    setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+    
+    // Configurer l'adresse du serveur
+    struct sockaddr_in server_addr;
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port = htons(config.port);
+    
+    // Lier le socket
+    if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+        perror("Erreur bind");
+        close(server_socket);
+        exit(EXIT_FAILURE);
+    }
+    
+    // Mettre en écoute
+    if (listen(server_socket, 10) < 0) {
+        perror("Erreur listen");
+        close(server_socket);
+        exit(EXIT_FAILURE);
+    }
+    
+    // Enregistrer le démarrage
+    log_server_start(config, "0.0.0.0");
+    
+    printf("Serveur Delivraptor démarré sur le port %d\n", config.port);
+    printf("Capacité: %d\n", config.capacity);
+    printf("Fichier d'authentification: %s\n", config.auth_file);
+    printf("Fichier de logs: %s\n", config.log_file);
+    printf("En attente de connexions...\n");
+    
+    // Gestion des processus zombies
+    signal(SIGCHLD, SIG_IGN);
+    
+    // Boucle principale d'acceptation des connexions
+    while (1) {
+        struct sockaddr_in client_addr;
+        socklen_t client_len = sizeof(client_addr);
+        
+        int client_socket = accept(server_socket, (struct sockaddr*)&client_addr, &client_len);
+        if (client_socket < 0) {
+            perror("Erreur accept");
+            continue;
+        }
+        
+        // Créer une nouvelle session client
+        struct ClientSession session;
+        session.client_socket = client_socket;
+        session.authentified = 0;
+        session.username[0] = '\0';
+        session.client_port = ntohs(client_addr.sin_port);
+        inet_ntop(AF_INET, &client_addr.sin_addr, session.client_ip, INET_ADDRSTRLEN);
+        
+        write_log(config.log_file, session.client_ip, session.client_port,
+                  NULL, "CONNECT", "Nouvelle connexion client");
+        
+        // Créer un processus fils pour gérer le client
+        pid_t pid = fork();
+        
+        if (pid < 0) {
+            perror("Erreur fork");
+            close(client_socket);
+            continue;
+        }
+        
+        if (pid == 0) {
+            // Processus fils
+            close(server_socket); // Le fils n'a pas besoin du socket serveur
+            gerer_client(session, config);
+        } else {
+            // Processus père
+            close(client_socket); // Le père n'a pas besoin du socket client
+            session.pid = pid;
+            printf("Client connecté depuis %s:%d (PID: %d)\n", 
+                   session.client_ip, session.client_port, pid);
+        }
+    }
+    
+    // Nettoyage (ne devrait jamais être atteint)
+    mysql_close(conn);
+    close(server_socket);
+    log_server_stop(config, "0.0.0.0");
+    
+    return 0;
 }
