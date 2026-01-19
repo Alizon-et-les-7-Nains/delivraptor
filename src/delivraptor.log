@@ -60,3 +60,18 @@
 [2026-01-19 10:07:48] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
 [2026-01-19 10:07:51] [127.0.0.1:57231] CONNECT: Nouvelle connexion client
 [2026-01-19 10:07:51] [127.0.0.1:57231] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-19 13:48:08] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-19 13:48:19] [127.0.0.1:57620] CONNECT: Nouvelle connexion client
+[2026-01-19 13:48:19] [127.0.0.1:57620] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-19 13:51:18] [127.0.0.1:57620] [alizon] AUTH: Authentification réussie
+[2026-01-19 13:51:35] [127.0.0.1:57620] [alizon] STATUS: 3989494249|333333333|test4|Chez destinataire|9|2026-01-19 10:09:12
+
+[2026-01-19 13:58:16] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-19 13:58:18] [127.0.0.1:57687] CONNECT: Nouvelle connexion client
+[2026-01-19 13:58:18] [127.0.0.1:57687] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-19 13:58:40] [127.0.0.1:57687] [alizon] AUTH: Authentification réussie
+[2026-01-19 13:58:49] [127.0.0.1:57687] [alizon] CREATE: Nouveau bordereau 1280494986 créé pour commande 111111111
+[2026-01-19 13:59:01] [127.0.0.1:57687] [alizon] CREATE: Nouveau bordereau 7089264353 créé pour commande 222222222
+[2026-01-19 13:59:13] [127.0.0.1:57687] [alizon] CREATE: Nouveau bordereau 8547685869 créé pour commande 902374638
+[2026-01-19 13:59:23] [127.0.0.1:57687] [alizon] CREATE: Commande 456287822 mise en file d'attente (capacité: 3/3)
+[2026-01-19 14:03:26] [127.0.0.1:57687] [alizon] CREATE: Nouveau bordereau 1891746851 créé pour commande 223328736

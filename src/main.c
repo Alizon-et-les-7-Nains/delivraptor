@@ -252,12 +252,12 @@ void status(struct ClientSession *session, char *bordereau, struct ServerConfig 
 
     char response[BUFFER_SIZE];
     char query[512];
-    
+
     snprintf(query, sizeof(query),
-             "SELECT noCommande, destination, localisation, etape, date_etape "
-             "FROM _delivraptor_colis "
-             "WHERE numBordereau = %s",
-             bordereau);
+         "SELECT noCommande, destination, localisation, etape, date_etape, livraison_type, photo_path "
+         "FROM _delivraptor_colis "
+         "WHERE numBordereau = %s",
+         bordereau);
     
     if (mysql_query(conn, query)) {
         snprintf(response, sizeof(response), "ERROR DB_QUERY\n");
@@ -274,12 +274,45 @@ void status(struct ClientSession *session, char *bordereau, struct ServerConfig 
     
     MYSQL_ROW row = mysql_fetch_row(result);
     if (row) {
-        snprintf(response, sizeof(response),
-                 "%s|%s|%s|%s|%s|%s\n",
-                 bordereau, row[0], row[1], row[2], row[3], row[4]);
+    char *livraison_type = row[5];
+    char *photo_path = row[6];     
+    
+    // Envoyer d'abord les données texte
+    snprintf(response, sizeof(response),
+             "%s|%s|%s|%s|%s|%s|%s|%s",
+             bordereau, row[0], row[1], row[2], row[3], row[4], 
+             livraison_type ? livraison_type : "", 
+             photo_path ? photo_path : "");
+    
+    send(session->client_socket, response, strlen(response), 0);
+    
+    // Si livraison ABSENT et chemin d'image existe
+    if (livraison_type && strcmp(livraison_type, "ABSENT") == 0 && 
+        photo_path && strlen(photo_path) > 0) {
         
-        write_log(config.log_file, session->client_ip, session->client_port,
-                  session->username, "STATUS", response);
+        FILE *img_file = fopen(photo_path, "rb");
+        if (img_file) {
+            // Lire et envoyer l'image binaire
+            fseek(img_file, 0, SEEK_END);
+            long img_size = ftell(img_file);
+            fseek(img_file, 0, SEEK_SET);
+            
+            char *img_buffer = malloc(img_size);
+            if (img_buffer) {
+                fread(img_buffer, 1, img_size, img_file);
+                
+                // Envoyer séparateur
+                char separator[] = "\n---IMAGE_START---\n";
+                send(session->client_socket, separator, strlen(separator), 0);
+                
+                // Envoyer l'image
+                send(session->client_socket, img_buffer, img_size, 0);
+                
+                free(img_buffer);
+            }
+            fclose(img_file);
+        }
+    }
     } else {
         snprintf(response, sizeof(response), "ERROR BORDEREAU_NOT_FOUND\n");
         
