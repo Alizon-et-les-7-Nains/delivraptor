@@ -1,34 +1,33 @@
 # # **RÉPARTITION DU TRAVAIL - SAÉ 3 DÉLIVRAPTOR**
 
-**Équipe :** A2.1
+**Équipe :** A2.1 alizon et les sept nains
 **Membres :** DOOM Timéo, PERCHE PAOLO
 **Date :** 12/01/26
 
 ## **Tableau de Répartition**
-| Tâche | DOOM TIMÉO | PERCHE PAOLO | Total |
-|-------|-----------|--------------|-------|
-| **Conception & Design** | | | **100%** |
-| - Design du protocole | 0% | 0% | 0% |
-| - Architecture système | 0% | 0% | 0% |
-| **Développement Serveur (C)** | | | **100%** |
-| - Socket & connexions | 0% | 0% | 0% |
-| - Gestion protocole | 0% | 0% | 0% |
-| - Base de données MySQL | 0% | 0% | 0% |
-| - Système de logging | 0% | 0% | 0% |
-| **Développement Client (PHP)** | | | **100%** |
-| - Client style telnet | 0% | 0% | 0% |
-| - Intégration Alizon | 0% | 0% | 0% |
-| - Script simulateur | 0% | 0% | 0% |
-| - Interface ligne de commande | 0% | 0% | 0% |
-| **Base de Données** | | | **100%** |
-| - Schéma & création tables | 0% | 0% | 0% |
-| - Requêtes SQL | 0% | 0% | 0% |
-| - Gestion capacité | 0% | 0% | 0% |
-| **Documentation** | | | **100%** |
-| - Documentation technique | 0% | 0% | 0% |
-| - Cas d'utilisation | 0% | 0% | 0% |
-| - Guide d'installation | 0% | 0% | 0% |
-| **Tests & Validation** | | | **100%** |
-| - Tests unitaires | 0% | 0% | 0% |
-| - Tests d'intégration | 0% | 0% | 0% |
-| - Debug & correction bugs | 0% | 0% | 0% |
+
+| Tâche                          | DOOM TIMÉO | PERCHE PAOLO | Total    |
+| ------------------------------ | ---------- | ------------ | -------- |
+| **Conception & Design**        |            |              | **100%** |
+| - Design du protocole          | 65%        | 35%          | 100%     |
+| - Architecture système         | 100%       | 0%           | 100%     |
+| **Développement Serveur (C)**  |            |              | **100%** |
+| - Socket & connexions          | 90%        | 10%          | 100%     |
+| - Gestion protocole            | 90%        | 10%          | 100%     |
+| - Base de données MySQL        | 50%        | 50%          | 100%     |
+| - Système de logging           | 100%       | 0%           | 100%     |
+| **Développement Client (PHP)** |            |              | **100%** |
+| - Client style telnet          | 0%         | 100%         | 100%     |
+| - Intégration Alizon           | 0%         | 100%         | 100%     |
+| - Script simulateur            | 75%        | 25%          | 100%     |
+| **Base de Données**            |            |              | **100%** |
+| - Schéma & création tables     | 50%        | 50%          | 100%     |
+| - Requêtes SQL                 | 50%        | 50%          | 100%     |
+| - Gestion capacité             | 100%       | 0%           | 100%     |
+| **Documentation**              |            |              | **100%** |
+| - Documentation technique      | 100%       | 0%           | 100%     |
+| - Cas d'utilisation            | 100%       | 0%           | 100%     |
+| **Tests & Validation**         |            |              | **100%** |
+| - Tests unitaires              | 50%        | 50%          | 100%     |
+| - Tests d'intégration          | 20%        | 80%          | 100%       |
+| - Debug & correction bugs      | 35%        | 65%          | 100%     |
