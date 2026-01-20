@@ -32,15 +32,12 @@ Le serveur utilise un modèle fork :
 
 - Processus principal : Accepte les connexions
 - Processus fils : Gère chaque client indépendamment
-- Avantage : Isolation totale entre clients
 
 **Conséquences pratiques :**
 
 - Chaque connexion a sa propre session
 - Authentification nécessaire par connexion
 - Les processus fils se terminent avec le client
-
----
 
 ## Tests avec Telnet
 
@@ -85,7 +82,7 @@ AUTH alizon e10adc3949ba59abbe56e057f20f883e
 ### 3. Créer un premier colis
 
 ```
-CREATE 1000000001 "10 Rue de la Paix, 75001 Paris"
+CREATE 1000000001 10 Rue de la Paix, 75001 Paris
 ```
 
 **Réponse :**
@@ -93,8 +90,6 @@ CREATE 1000000001 "10 Rue de la Paix, 75001 Paris"
 ```
 1467226081
 ```
-
-_(Numéro de bordereau à 10 chiffres)_
 
 ### 4. Consulter son statut
 
@@ -128,7 +123,7 @@ Connection closed by foreign host.
 **Commande :**
 
 ```
-CREATE 1000000002 "25 Avenue Montaigne, 75008 Paris"
+CREATE 1000000002 25 Avenue Montaigne, 75008 Paris
 ```
 
 **Réponse réussie :**
@@ -158,7 +153,7 @@ _Le même bordereau est retourné, évitant les doublons_
 **Commande :**
 
 ```
-CREATE 0 "Adresse test"
+CREATE 0 Adresse test
 ```
 
 **Réponse :**
@@ -203,7 +198,7 @@ ERROR BORDEREAU_NOT_FOUND
 
 ```
 STATUS 818949116
-818949116|222222222|5 Rue de la République|Chez destinataire|9|2026-01-19 12:15:30|ABSENT|/var/www/images/boite_aux_lettres.jpg
+818949116|222222222|5 Rue de la République|Chez destinataire|9|2026-01-19 12:15:30|ABSENT|binaire_img
 ```
 
 2. **Client PHP doit :**
@@ -237,46 +232,6 @@ if ($data[6] == "ABSENT") {
 }
 ```
 
-## Dépannage et surveillance
-
-### Consultation des logs
-
-```bash
-# Suivre les logs en temps réel
-tail -f server.log
-
-# Filtrer par IP
-grep "192.168.1.100" server.log
-
-# Voir les erreurs
-grep "ERROR" server.log
-
-# Statistiques par utilisateur
-grep "CREATE" server.log | cut -d' ' -f6 | sort | uniq -c
-```
-
-### Messages de log typiques :
-
-```
-[2026-01-19 10:30:45] [127.0.0.1:54321] [alizon] CREATE: Nouveau bordereau 1467226081 créé
-[2026-01-19 10:31:00] [127.0.0.1:54321] [alizon] STATUS: Consultation bordereau 1467226081
-[2026-01-19 10:32:15] [SERVER] QUEUE: Bordereau 1467226081 libéré (étape 4→5)
-[2026-01-19 10:32:16] [SERVER] QUEUE: Bordereau 1928374650 traité depuis file d'attente
-```
-
-### Vérification de l'état système
-
-```bash
-# Processus serveur
-ps aux | grep delivraptor_server
-
-# Connexions actives
-netstat -tlnp | grep :8080
-
-# Capacité actuelle (via QUEUE_STATUS)
-echo "AUTH alizon e10adc3949ba59abbe56e057f20f883e\nQUEUE_STATUS" | nc localhost 8080
-```
-
 ## Scénarios d'erreur et solutions
 
 | Problème                    | Cause probable       | Solution                         |
@@ -288,217 +243,3 @@ echo "AUTH alizon e10adc3949ba59abbe56e057f20f883e\nQUEUE_STATUS" | nc localhost
 | Connexion refusée           | Serveur non démarré  | Lancer `./delivraptor_server`    |
 | Timeout connexion           | Port bloqué          | Vérifier firewall, utiliser `-p` |
 | Capacité pleine             | File saturée         | Attendre ou augmenter `-c`       |
-
-## Workflow complet de test
-
-### Étape 1 : Préparation
-
-```bash
-# Compiler
-cc main.c $(mysql_config --cflags --libs) -o delivraptor_server
-
-# Créer auth.txt
-echo "alizon:e10adc3949ba59abbe56e057f20f883e" > auth.txt
-
-# Créer répertoire images
-mkdir -p images
-cp imgBoiteAuxLettres.jpg images/
-```
-
-### Étape 2 : Lancement serveur
-
-```bash
-# Capacité réduite pour tester les files
-./delivraptor_server -c 3 -l test.log
-```
-
-### Étape 3 : Tests manuels (terminal 1)
-
-```bash
-telnet localhost 8080
-AUTH alizon e10adc3949ba59abbe56e057f20f883e
-CREATE 100000001 "Adresse 1"
-CREATE 100000002 "Adresse 2"
-CREATE 100000003 "Adresse 3"  # Capacité pleine
-QUEUE_STATUS
-```
-
-### Étape 4 : Simulation (terminal 2)
-
-```bash
-# Simuler progression
-php simulateur.php
-
-# Vérifier les logs
-tail -f test.log
-```
-
-### Étape 5 : Vérification (terminal 1)
-
-```
-STATUS [bordereau_étape4]  # Doit être à l'étape 5
-QUEUE_STATUS               # Doit montrer libération
-CREATE 100000004 "Adresse 4"  # Doit maintenant passer
-```
-
-## Gestion de la capacité
-
-### Situation 1 : Capacité disponible
-
-**Serveur démarré avec :** `-c 3` (capacité de 3 colis)
-
-**Commande :**
-
-```
-QUEUE_STATUS
-```
-
-**Réponse :**
-
-```
-QUEUE_STATUS En attente: 0, Capacité actuelle: 1/3, Places libres: 2
-```
-
-### Situation 2 : Capacité pleine
-
-Après création de 3 colis :
-
-```
-QUEUE_STATUS
-```
-
-**Réponse :**
-
-```
-QUEUE_STATUS En attente: 0, Capacité actuelle: 3/3, Places libres: 0
-```
-
-### Situation 3 : Nouveau colis avec capacité pleine
-
-**Commande :**
-
-```
-CREATE 1000000004 "30 Rue de Rivoli, 75004 Paris"
-```
-
-**Réponse :**
-
-```
-1000000004
-```
-
-_Le numéro de bordereau est retourné, mais la commande est mise en file d'attente_
-
-⚠️ **Important** : Les numéros de bordereau sont toujours à 10 chiffres.
-Si vous obtenez un nombre différent (comme un identifiant de commande au lieu du bordereau),
-c'est une anomalie. Un bordereau valide fait toujours 10 chiffres.
-
-**Vérification :**
-
-```
-QUEUE_STATUS
-```
-
-**Réponse :**
-
-```
-QUEUE_STATUS En attente: 1, Capacité actuelle: 3/3, Places libres: 0
-```
-
-### Situation 4 : Libération de capacité
-
-Quand un colis passe de l'étape 4 à 5, une place se libère automatiquement et la file d'attente est traitée.
-
-## Simulation de progression
-
-### 1. Lancement manuel du simulateur
-
-```bash
-php simulateur.php
-```
-
-**Sortie :**
-
-```
-[Nettoyage] Colis aux étapes >= 5 retirés de la file de prise en charge
-Bordereau 1467226081 : Étape 1 → 2 (En transit vers plateforme transporteur)
-Bordereau 813692617 : Étape 2 → 3 (Arrivé chez transporteur)
-=== Simulation terminée ===
-2 colis avancés d'une étape.
-```
-
-### 2. Configuration automatique (cron)
-
-Ajouter dans la crontab :
-
-```bash
-# Éditer la crontab
-crontab -e
-
-# Ajouter cette ligne pour exécuter toutes les minutes
-* * * * * /usr/bin/php /chemin/complet/simulateur.php >> /var/log/delivraptor_sim.log 2>&1
-```
-
-### 3. Suivi de la progression
-
-**Étape par étape :**
-
-| Étape | Localisation                            | Commande STATUS            |
-| ----- | --------------------------------------- | -------------------------- | --------------------------------------- | --- | ---- |
-| 1     | Entrepôt Alizon                         | `STATUS 1467226081` → `... | Entrepôt Alizon                         | 1   | ...` |
-| 2     | En transit vers plateforme transporteur | `...                       | En transit vers plateforme transporteur | 2   | ...` |
-| 3     | Arrivé chez transporteur                | `...                       | Arrivé chez transporteur                | 3   | ...` |
-| 4     | Départ vers plateforme régionale        | `...                       | Départ vers plateforme régionale        | 4   | ...` |
-| 5     | Arrivé plateforme régionale             | `...                       | Arrivé plateforme régionale             | 5   | ...` |
-| 6     | Départ vers centre local                | `...                       | Départ vers centre local                | 6   | ...` |
-| 7     | Arrivé centre local                     | `...                       | Arrivé centre local                     | 7   | ...` |
-| 8     | Départ pour livraison finale            | `...                       | Départ pour livraison finale            | 8   | ...` |
-| 9     | Chez destinataire                       | `...                       | Chez destinataire                       | 9   | ...` |
-
-## Types de livraison (étape 9)
-
-### Type 1 : Livraison en mains propres
-
-**Commande :**
-
-```
-STATUS 5158575785
-```
-
-**Réponse :**
-
-```
-5158575785|555555555|42 Rue Exemple|Chez destinataire|9|2026-01-19 14:25:10|MAINS_PROPRES|
-```
-
-### Type 2 : Livraison en absence
-
-**Commande :**
-
-```
-STATUS 818949116
-```
-
-**Réponse :**
-
-```
-818949116|222222222|5 Rue de la République|Chez destinataire|9|2026-01-19 12:15:30|ABSENT|/var/www/images/boite_aux_lettres.jpg
-```
-
-_Le chemin de l'image est fourni pour preuve de livraison_
-
-### Type 3 : Colis refusé
-
-**Commande :**
-
-```
-STATUS 3643866199
-```
-
-**Réponse :**
-
-```
-3643866199|111111111|20 Avenue Foch|Chez destinataire|9|2026-01-19 12:30:15|REFUSE|Destinataire absent
-```
-
-_La raison du refus est spécifiée_

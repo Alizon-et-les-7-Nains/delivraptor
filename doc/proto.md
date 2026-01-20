@@ -55,22 +55,22 @@ CREATE <commande_id> <destination>
 - `ERROR DB_QUERY` : Erreur base de données
 
 **Exemple** :
-CREATE 1234567890 "10 Rue de la Paix, 75001 Paris"
+CREATE 1234567890 10 Rue de la Paix, 75001 Paris
 
 **Exemples CREATE (gestion capacité) :**
 
 Cas capacité pleine :
 
 ```
-CREATE 1000000004 "30 Rue de Rivoli, 75004 Paris"
-1029384756                    ← Bordereau toujours retourné, pas commande_id
+CREATE 1000000004 30 Rue de Rivoli, 75004 Paris
+1029384756
 ```
 
 Cas capacité disponible :
 
 ```
 CREATE 1000000005 "5 Avenue des Champs-Élysées"
-1928374650                    ← Bordereau créé et ajouté à la file
+1928374650
 ```
 
 ### STATUS - Consultation d'un colis
@@ -108,21 +108,10 @@ Pour les livraisons de type `ABSENT` à l'étape 9, le serveur envoie :
 
 1. Les données texte au format défini ci-dessus (`<bordereau>|...|<binaire_img>`), suivies d'un `\n`
 2. L'image binaire (si disponible) envoyée immédiatement après (flux binaire)
-3. La chaîne `null` suivie d'un retour à la ligne (`null\n`) pour marquer la fin
-
-**Séquence complète :**
-
-```
-[données texte]\n
-[données binaires de l'image]
-null\n
-```
 
 **Cas sans image :**
-
 ```
-[données texte]\n
-null\n
+[données texte]|null\n
 ```
 
 **Gestion côté client :**
@@ -221,9 +210,6 @@ alizon:e10adc3949ba59abbe56e057f20f883e
 - `ERROR MISSING_*` : Paramètres manquants
 - `ERROR INVALID_*` : Format invalide
 - `ERROR BORDEREAU_GENERATION_FAILED` : Impossible de générer un bordereau unique
-
-**Codes d'erreur supplémentaires :**
-
 - `ERROR DB_RESULT` : Erreur lors de la récupération des résultats BDD
 - `ERROR DB_INSERT` : Erreur d'insertion dans la base
 - `ERROR DB_QUEUE_INSERT` : Erreur d'insertion dans la file d'attente
