@@ -16,15 +16,24 @@ Ce document présente les cas d'utilisation pratiques du système Délivraptor. 
 
 ## Configuration initiale
 
-### 1. Démarrer le serveur
+### Compilation
+```bash
+cc main.c $(mysql_config --cflags --libs) -o delivraptor_server
+```
+
+## Exécution
 
 ```bash
-# Avec paramètres par défaut
-./delivraptor_server
-
-# Avec configuration personnalisée
-./delivraptor_server -p 9000 -c 3 -a auth.txt -l server.log
+./delivraptor_server -p 8080 -c 3 -a auth.txt -l delivraptor.log 
 ```
+
+## Options principales
+
+- -p <num> : port d'écoute (ex. 4242)
+- -a <fichier> : fichier d'authentification (ex. ./auth.txt)
+- -c <n> : capacité maximale (ex. 3)
+- -l <fichier> : fichier de log (ex. ./delivraptor.log)
+
 
 ## Mode fork du serveur
 

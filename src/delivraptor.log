@@ -1,0 +1,11 @@
+[2026-01-20 15:22:39] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-20 15:23:12] [127.0.0.1:50492] CONNECT: Nouvelle connexion client
+[2026-01-20 15:23:12] [127.0.0.1:50492] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-20 15:23:25] [127.0.0.1:50492] [alizon] AUTH: Authentification réussie
+[2026-01-20 15:23:32] [127.0.0.1:50492] [alizon] CREATE: Nouveau bordereau 4603281295 créé pour commande 1626373 (ajouté à la file)
+[2026-01-20 15:24:02] [127.0.0.1:50492] [alizon] QUEUE_STATUS: QUEUE_STATUS En attente: 0, Capacité actuelle: 1/3, Places libres: 2
+
+[2026-01-20 15:24:07] [127.0.0.1:50492] [alizon] HELP: Commande HELP exécutée
+[2026-01-20 15:24:17] [127.0.0.1:50492] [alizon] QUIT: Déconnexion demandée par client
+[2026-01-20 15:24:17] [127.0.0.1:50492] [alizon] EXIT: Processus fils terminé
+[2026-01-20 15:25:57] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
