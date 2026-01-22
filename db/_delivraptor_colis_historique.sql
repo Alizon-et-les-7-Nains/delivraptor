@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `_delivraptor_colis_historique`
 --
 
+
 CREATE TABLE `_delivraptor_colis_historique` (
   `id` int(11) NOT NULL,
   `numBordereau` bigint(20) NOT NULL,
