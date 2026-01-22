@@ -2,9 +2,7 @@
 require_once __DIR__ . "/controllers/pdo.php";
 
 $tabIdDestination = $_SESSION['tabIdDestination'];
-// auto_test.php
 
-// Utilisation
 $host = 'web';
 $port = 8080;
 

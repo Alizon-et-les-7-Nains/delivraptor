@@ -14,7 +14,7 @@ if (!$socket) {
     exit(1);
 }
 
-// OPTIMISATION 1: Définir un timeout de lecture plus court
+// Définir un timeout de lecture plus court
 stream_set_timeout($socket, 5);
 
 // Authentification
@@ -32,7 +32,7 @@ $bordereau = trim($result['noBordereau']);
 fwrite($socket, "STATUS $bordereau\n");
 fflush($socket);
 
-// OPTIMISATION 2: Lire la ligne complète d'un coup (limite à 4096 car contient 7 champs)
+// Lire la ligne complète d'un coup (limite à 4096 car contient 7 champs)
 $text_line = fgets($socket, 4096);
 
 if ($text_line === false) {
@@ -58,11 +58,11 @@ $etape = $status_parts[4];
 $date_etape = $status_parts[5];
 $typeLivraison = $status_parts[6] ?? '';
 
-// OPTIMISATION 3: Gestion optimisée de l'image
+// Gestion optimisée de l'image
 $image_data = '';
 
 if ($etape == '9' && $typeLivraison === 'ABSENT') {
-    // MÉTHODE OPTIMISÉE: Lire par gros chunks jusqu'au \n final
+    // Lire par gros chunks jusqu'au \n final
     $buffer = '';
     $chunk_size = 65536; // 64 KB chunks pour performance maximale
     
