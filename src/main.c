@@ -71,7 +71,7 @@ long long num_bordereau_unique();
  * get_timestamp() - Retourne un timestamp formaté pour les logs
  */
 char* get_timestamp() {
-    static char timestamp[20];
+    static char timestamp[32];
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
     
