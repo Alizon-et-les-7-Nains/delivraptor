@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [2026-01-20 15:22:39] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
 [2026-01-20 15:23:12] [127.0.0.1:50492] CONNECT: Nouvelle connexion client
 [2026-01-20 15:23:12] [127.0.0.1:50492] CONNECT: Nouveau processus fils pour gestion client
@@ -43,3 +44,5 @@
 [2026-01-22 13:27:57] [127.0.0.1:61325] [alizon] CREATE: Nouveau bordereau 3003534963 créé pour commande 222222 (ajouté à la file)
 [2026-01-22 13:28:07] [127.0.0.1:61325] [alizon] CREATE: Nouveau bordereau 1811063405 créé pour commande 333333 (ajouté à la file)
 [2026-01-22 13:28:17] [127.0.0.1:61325] [alizon] CREATE_ERROR: Erreur insertion queue: Unknown column 'numBordereau' in 'INSERT INTO'
+=======
+>>>>>>> 4be73e7a67052a57fa3c36ea411436ec0e779f84
