@@ -1,7 +1,7 @@
 <?php
 // simulateur.php
 
-// 1. Connexion BDD
+// 1. Connexion BDD changer selon la BD
 $host = 'localhost';
 $dbname = 'delivraptor';
 $user = 'pperche';

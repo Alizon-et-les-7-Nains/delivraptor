@@ -9,3 +9,37 @@
 [2026-01-20 15:24:17] [127.0.0.1:50492] [alizon] QUIT: Déconnexion demandée par client
 [2026-01-20 15:24:17] [127.0.0.1:50492] [alizon] EXIT: Processus fils terminé
 [2026-01-20 15:25:57] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-22 13:12:35] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-22 13:12:44] [127.0.0.1:61185] CONNECT: Nouvelle connexion client
+[2026-01-22 13:12:44] [127.0.0.1:61185] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-22 13:13:28] [127.0.0.1:61185] [alizon] AUTH: Authentification réussie
+[2026-01-22 13:13:36] [127.0.0.1:61185] [alizon] CREATE: Paramètres manquants (commande_id ou destination)
+[2026-01-22 13:13:49] [127.0.0.1:61185] [alizon] CREATE: Nouveau bordereau 1522812737 créé pour commande 123456 (ajouté à la file)
+[2026-01-22 13:19:19] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-22 13:19:25] [127.0.0.1:61248] CONNECT: Nouvelle connexion client
+[2026-01-22 13:19:25] [127.0.0.1:61248] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-22 13:19:31] [127.0.0.1:61248] AUTH: Identifiants manquants dans la requête
+[2026-01-22 13:19:39] [127.0.0.1:61248] ERROR: ����
+[2026-01-22 13:20:09] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-22 13:20:12] [127.0.0.1:61251] CONNECT: Nouvelle connexion client
+[2026-01-22 13:20:12] [127.0.0.1:61251] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-22 13:20:19] [127.0.0.1:61251] [alizon] AUTH: Authentification réussie
+[2026-01-22 13:20:33] [127.0.0.1:61251] [alizon] CREATE: Nouveau bordereau 6496490232 créé pour commande 123456 (ajouté à la file)
+[2026-01-22 13:20:43] [127.0.0.1:61251] [alizon] STATUS: Bordereau non trouvé
+[2026-01-22 13:23:17] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-22 13:23:20] [127.0.0.1:61291] CONNECT: Nouvelle connexion client
+[2026-01-22 13:23:20] [127.0.0.1:61291] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-22 13:23:27] [127.0.0.1:61291] [alizon] AUTH: Authentification réussie
+[2026-01-22 13:23:37] [127.0.0.1:61291] [alizon] CREATE: Nouveau bordereau 5299677063 créé pour commande 123456 (ajouté à la file)
+[2026-01-22 13:25:28] [127.0.0.1:61291] [alizon] QUEUE_STATUS: QUEUE_STATUS En attente: 0, Capacité actuelle: 0/3, Places libres: 3
+
+[2026-01-22 13:25:37] [127.0.0.1:61291] [alizon] QUIT: Déconnexion demandée par client
+[2026-01-22 13:25:37] [127.0.0.1:61291] [alizon] EXIT: Processus fils terminé
+[2026-01-22 13:27:08] [0.0.0.0:8080] [SERVER] START: Serveur démarré - Port: 8080, Capacité: 3, Auth: auth.txt, Log: delivraptor.log
+[2026-01-22 13:27:18] [127.0.0.1:61325] CONNECT: Nouvelle connexion client
+[2026-01-22 13:27:18] [127.0.0.1:61325] CONNECT: Nouveau processus fils pour gestion client
+[2026-01-22 13:27:35] [127.0.0.1:61325] [alizon] AUTH: Authentification réussie
+[2026-01-22 13:27:46] [127.0.0.1:61325] [alizon] CREATE: Nouveau bordereau 3379586495 créé pour commande 111111 (ajouté à la file)
+[2026-01-22 13:27:57] [127.0.0.1:61325] [alizon] CREATE: Nouveau bordereau 3003534963 créé pour commande 222222 (ajouté à la file)
+[2026-01-22 13:28:07] [127.0.0.1:61325] [alizon] CREATE: Nouveau bordereau 1811063405 créé pour commande 333333 (ajouté à la file)
+[2026-01-22 13:28:17] [127.0.0.1:61325] [alizon] CREATE_ERROR: Erreur insertion queue: Unknown column 'numBordereau' in 'INSERT INTO'

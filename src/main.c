@@ -159,7 +159,7 @@ MYSQL* config_BD() {
         exit(EXIT_FAILURE);
     }
 
-    
+    // Changer la configuration de la base de donnée
     if (!mysql_real_connect(local_conn, "localhost", "pperche", "grognasseEtCompagnie", "delivraptor", 3306, NULL, 0)) {
         fprintf(stderr, "Connexion échouée : %s\n", mysql_error(local_conn));
         mysql_close(local_conn);
